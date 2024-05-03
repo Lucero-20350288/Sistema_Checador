@@ -137,10 +137,17 @@ function agregarHoraEntrada(dia, hora) {
         horarios[dia].Hora_entrada.push(hora);
         // Ordena las horas de entrada para asegurar un chequeo adecuado
         horarios[dia].Hora_entrada.sort((a, b) => parseInt(a.split(':')[0]) - parseInt(b.split(':')[0]));
-            
+        horarios[dia].Hora_salida.sort((a, b) => parseInt(a.split(':')[0]) - parseInt(b.split(':')[0]));
+                
         // Si la hora actual tiene una hora de entrada previa que es al menos dos horas menor, entonces también agrega la actual como salida
         if (horarios[dia].Hora_entrada.some(h => parseInt(h.split(':')[0]) <= horaNumero - 2)) {
-            horarios[dia].Hora_salida.push(hora);
+            
+            // Verifica si no hay una hora de entrada previa que sea menos de dos horas menor
+            if (!horarios[dia].Hora_entrada.some(h => parseInt(h.split(':')[0]) <= horaNumero - 1) || !horarios[dia].Hora_salida.some(h => parseInt(h.split(':')[0]) <= horaNumero - 1)) {
+                // Agrega la hora actual como salida
+                horarios[dia].Hora_salida.push(hora);
+                horarios[dia].Hora_salida.sort((a, b) => parseInt(a.split(':')[0]) - parseInt(b.split(':')[0]));
+            }
         }
     }
     
