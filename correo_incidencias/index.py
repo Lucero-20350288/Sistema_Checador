@@ -122,29 +122,31 @@ def mostrar_usuarios():
     empleados_list = list(empleados)
     return render_template('gestion_usuarios.html', usuarios=usuarios_list, empleados=empleados_list)
 
-
 @app.route('/login', methods=['POST'])
 def login():
     rfc = request.form['rfc']
     contrasena = request.form['contrasena']
     user_collection = db['login_jefes']
-
     user = user_collection.find_one({"rfc": rfc, "contrasena": contrasena})
+    
     if user:
         # Renderizar directamente el template con variables
-        return render_template('principal.html', token='4LI0THT0K3N', rfc=rfc)
+        usuario = Usuario(id =5, nombre ="Pedro" )
+        login_user(usuario)
+        return jsonify({'redirect': url_for('principal'), 'token': '4LI0THT0K3N', 'rfc': rfc}), 200
     else:
         return jsonify({'error': 'Credenciales incorrectas'}), 401
-
     
 @app.route('/verificacion', methods=['POST'])
 def verificacion():
-    rfc = request.form['rfc']
-    token = request.form['token']
+    rfc = request.form['rfc']    # Accede al valor del campo 'rfc'
+    token = request.form['token']  # Accede al valor del campo 'token'
+    print(rfc)
+    print(token)
     if token == "4LI0THT0K3N" and db['login_jefes'].find_one({"rfc": rfc}):
         return jsonify({'authorized': True}), 200
     else:
-        return jsonify({'authorized': False, 'error': 'Verificación fallida'}), 403
+        return jsonify({'authorized': False, 'error': 'Verificación fallida-403'}), 403
 
 
 @app.route('/agregarusuario', methods=['PUT'])

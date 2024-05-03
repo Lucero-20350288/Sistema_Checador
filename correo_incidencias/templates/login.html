@@ -53,11 +53,15 @@
     }
 
     h1 {
+        color: #00062b;
+        margin-bottom: 10px;
+        text-align: center;
+    }
+    h2 {
         color: #fff;
         margin-bottom: 10px;
         text-align: center;
     }
-    
 
     input, button {
         width: 100%;
@@ -107,10 +111,10 @@
     <div class="col col-2">
         <div id="error-message" class="error"></div>
         <form action="/login" method="post" onsubmit="return handleSubmit()">
-            <h1>RFC</h1>
+            <h2>RFC</h2>
             <input type="text" name="rfc" required>
 
-            <h1>CONTRASEÑA</h1>
+            <h2>CONTRASEÑA</h2>
             <input type="password" name="contrasena" required>
 
             <button type="submit">INICIAR SESIÓN</button>
@@ -119,7 +123,7 @@
 </div>
 
 <script>
-  function handleSubmit() {
+    function handleSubmit() {
     const form = document.querySelector('form');
     fetch(form.action, {
       method: form.method,
@@ -135,6 +139,7 @@
       });
     return false;  // Prevent the default form submit
   }
+  
 </script>
 
 </body>
