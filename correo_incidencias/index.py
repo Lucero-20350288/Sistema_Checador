@@ -22,9 +22,6 @@ handler.setLevel(logging.INFO)
 formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 handler.setFormatter(formatter)
 app.logger.addHandler(handler)
-import logging
-
-# Configurar el objeto logger
 logger = logging.getLogger(__name__)
 
 # Decorador para requerir inicio de sesión
@@ -47,7 +44,7 @@ def incidenciacorreo():
         correo_electronico = config.get('config_Correo', 'correo_electronico', fallback='')
         password = config.get('config_Correo', 'password', fallback='')
     except configparser.Error as e:
-        app.logger.error(f"Error al cargar el archivo de configuración: {e}")
+        logger.error(f"Error al cargar el archivo de configuración: {e}")
 
     empleados = db['datos_generales']
     empleadosReceived = empleados.find()
@@ -110,7 +107,7 @@ def enviar_correo():
         return jsonify({'message': 'Correo enviado con éxito'}), 200
     except Exception as e:
         error_message = f'Error al enviar el correo: {str(e)}'
-        app.logger.error(error_message)  # Registrar el error en el archivo de log
+        logger.error(error_message)  # Registrar el error en el archivo de log
         return jsonify({'error': error_message}), 500
     finally:
         try:
@@ -118,6 +115,7 @@ def enviar_correo():
             servidor_smtp.quit()
         except:
             pass  # Si hay algún error al cerrar la conexión, simplemente pasa
+
 # Ruta para mostrar usuarios
 @app.route('/usuarios', methods=['GET'])
 @login_required
@@ -187,8 +185,6 @@ def principal():
 
     return render_template('principal.html', empleados=empleadosReceived, correo_electronico=correo_electronico, password=password)
 
-
-
 # Ruta para agregar usuario
 @app.route('/agregarusuario', methods=['PUT'])
 @login_required
@@ -229,6 +225,27 @@ def notFound(error=None):
     response.status_code = 404
     return response
 
+# Ruta para el manejo de errores 405
+@app.errorhandler(405)
+def method_not_allowed(error):
+    # Leer la IP y el puerto desde variables.ini
+    config = configparser.ConfigParser()
+    config.read('variables.ini')
+    ip = config.get('variables', 'ip')
+    port = config.getint('variables', 'port')
+
+    # Crear el mensaje de error personalizado
+    message = {
+        'error': 'Metodo no permitido',
+        'status': '405 Method Not Allowed',
+        'message': f'El metodo utilizado no es permitido en esta ruta. Por favor, verifique si inicio sesion y autenticado. Acceda a la direccion {ip}:{port}/'
+    }
+    response = jsonify(message)
+    response.status_code = 405
+    return response
+
+
+
 if __name__ == '__main__':
     # Obtener la IP y el puerto desde el archivo de configuración
     config = configparser.ConfigParser()
@@ -240,4 +257,3 @@ if __name__ == '__main__':
     app.run(debug=True, host=ip, port=port)
 
 print("Iniciando el servidor envío de incidencias (correo) ... cierre esta ventana para terminar el proceso.")
-
