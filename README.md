@@ -3,7 +3,7 @@
 
 Sistema checador creado por el grupo 8A de la carrera de Ingenieria en Sistemas Computacionales.
 
-Recopilación de partes.
+Cuando quieran ejecutar el sistema checador deben entrar con el comando *cd sistemaChecador_flask* para que les ejecute correctamente python el index.py
 
 ## Features
 
