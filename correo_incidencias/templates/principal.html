@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IFrames Horizontales</title>
+<style>
+  .contenedor {
+    display: flex;
+  }
+  .iframe {
+    width: 50% ;
+    height: 700px ; /* ajusta la altura según necesites */
+  }
+</style>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+      let token = '{{ token }}'; // Obtenemos el token desde la plantilla
+      let rfc = '{{ rfc }}'; // Obtenemos el RFC desde la plantilla
+
+      // Si los datos no están en la plantilla, intentamos obtenerlos del Local Storage
+      if (!token || !rfc) {
+          token = localStorage.getItem('token');
+          rfc = localStorage.getItem('rfc');
+      }
+
+      // Verificar si token y rfc están disponibles para la verificación
+      if (!token || !rfc) {
+          document.body.innerHTML = ''; // Vaciar el contenido de la página si no están verificados
+          console.error('Acceso no autorizado');
+          return; // Detiene la ejecución adicional si no hay datos para verificar
+      }
+
+      // Realizar la verificación con el servidor
+      fetch('/verificacion', {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ rfc: rfc, token: token })
+      })
+      .then(response => {
+          if (!response.ok) throw new Error('Verificación fallida');
+          return response.json();
+      })
+      .then(data => {
+          if (!data.authorized) {
+              document.body.innerHTML = '';
+              console.error('Acceso no autorizado');
+          } else {
+              console.log('Acceso verificado');
+              // Aquí puedes cargar el contenido adicional si es necesario
+          }
+      })
+      .catch(error => {
+          document.body.innerHTML = '';
+          console.error(error.message);
+      });
+  });
+  </script>
+
+</head>
+<body>
+
+<div class="contenedor">
+  <iframe class="iframe" src="{{ url_for('incidenciacorreo') }}" frameborder="0"></iframe>
+  <iframe class="iframe" src="{{ url_for('mostrar_usuarios') }}" frameborder="0"></iframe>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sistema Checador</title>
+  <link rel="stylesheet" id="menuStyle" href="{{ url_for('static', filename='css/menu-grande.css') }}">
+  <script
+  src="https://code.jquery.com/jquery-3.7.1.min.js"
+  integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
+  crossorigin="anonymous">
+  </script>
+</head>
+<body>
+  <!--Menu Lateral-->
+  <div class="sidebar">
+    <div class="top-section">
+      <div class="left-side">
+        <img src="{{ url_for('static', filename='iconos/logo1.png') }}" alt="logo1" class="logo1">
+        <div class="brand-text">TECNM</div>
+      </div>
+      <div class="right-side">
+        <div class="ittux-text">TUXTEPEC</div>
+        <img src="{{ url_for('static', filename='iconos/logo2.png') }}" alt="logo2" class="logo2">
+      </div>
+    </div>
+    <div class="bottom-section">
+      <button class="btn-menu" id="btnArchivos" ><img id="menu1" class="iconmenu" src="{{ url_for('static', filename='iconos/icon_archi.png') }}"" alt="">Archivos</button>
+      <button class="btn-menu" id="btnCatalogos"><img id="menu2" class="iconmenu" src="{{ url_for('static', filename='iconos/icon_catalo.png') }}" alt="">Catálogos</button>
+      <button class="btn-menu"  id="btnReportes"><img id="menu3" class="iconmenu" src="{{ url_for('static', filename='iconos/icon_repor.png') }}" alt="">Reportes</button>
+      <button class="btn-menu" id="btnSeguridad"><img id="menu4" class="iconmenu" src="{{ url_for('static', filename='iconos/icon_segur.png') }}" alt="">Seguridad</button>
+      <button class="btn-menu" id="btnMant"><img id="menu5" class="iconmenu" src="{{ url_for('static', filename='iconos/icon_manten.png') }}" alt="">Mantenimiento</button>
+      <button class="btn-menu" id="btnDiasF" onclick="loadDiasFestivos()"><img id="menu6" class="iconmenu" src="{{ url_for('static', filename='iconos/icon_df.png') }}" alt="">Días Festivos</button>
+      <button class="btn-menu" id="btnAvisos"><img id="menu7" class="iconmenu" src="{{ url_for('static', filename='iconos/icon_aviso.png') }}" alt="">Avisos</button>
+      <button class="btn-menu" id="btnRed"><img id="menu8" class="iconmenu" src="{{ url_for('static', filename='iconos/icon_red.png') }}" alt="">Red</button>
+      <button class="btn-salir"><img id="menu9" class="iconmenu" src="{{ url_for('static', filename='iconos/icon_salir.png') }}" alt="">Salir</button>
+    
+      <div class="div-sidebar"><button class="btn-sidebar"><img id="menudisplay" src="{{ url_for('static', filename='iconos/doublearrow.svg') }}" alt=""></button></div>
+    </div>
+  </div>
+  <!--Encabezado-->
+  <div class="header">
+    <button class="btn-header" id="b1" onclick="loadChecador()"><img id="b1i" src="{{ url_for('static', filename='iconos/check.png') }}"  alt="">Checador</button>
+    <button class="btn-header" id="b2" onclick="loadEmpleados()"><img id="b2i" src="{{ url_for('static', filename='iconos/more.png') }}"  alt="">Agregar empleado</button>
+    <!-- Contenedor para #info y #perfil -->
+<div id="infoPerfilContainer">
+  <img src="{{ url_for('static', filename='iconos/btn-interrogacion.png') }}" id="info" alt="info">
+  <img src="{{ url_for('static', filename='iconos/btn-perfil.png') }}" id="perfil" alt="perfil">
+</div>
+
+<!-- Iframe que inicialmente está oculto -->
+<div id="iframeContainer" style="display:none; position: fixed; top: 80px; right: 20px; width: 200px; height: 100px; background-color: white; border: 1px solid #ccc; z-index: 1050;">
+  <iframe id="profileFrame" style="width:100%; height:100%;"></iframe>
+</div>
+  </div>
+<!--Contenido donde se muestran las ventanas-->
+  <div class="content">
+    <!-- Contenido principal de la página -->
+    <!-- Se inserta div Dinamico dependiendo la seleccion del menu -->
+    <iframe class="frameprincipal" id="contenido" src="">
+    </iframe>
+    <div class="footer">
+      <div class="content-footer">
+        <div class="instituto-footer">
+          <h2>TECNM CAMPUS TUXTEPEC</h2>
+        </div>
+        <div class="fecha-footer">
+          <p id="fecha-dinamica" class="parrafo-fecha">
+          <p id="hora-dinamica" class="parrafo-hora">
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+</div>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Función genérica para crear submenús
+      function crearSubMenu(btnId, opciones) {
+        var boton = document.getElementById(btnId);
+        var submenu = document.createElement('div');
+        submenu.classList.add('submenu');
+    
+        opciones.forEach(function(opcion) {
+          var opcionElement = document.createElement('button');
+          opcionElement.textContent = opcion.nombre;
+          opcionElement.classList.add('submenu-option');
+          opcionElement.addEventListener('click', function() {
+            document.getElementById('contenido').src = opcion.url;
+          });
+          submenu.appendChild(opcionElement);
+        });
+    
+        document.body.appendChild(submenu);
+    
+        boton.addEventListener('click', function() {
+          submenu.classList.toggle('show');
+          var rect = boton.getBoundingClientRect();
+          submenu.style.top = rect.top + 'px';
+          submenu.style.left = rect.right + 'px';
+        });
+    
+        submenu.addEventListener('mouseleave', function() {
+          submenu.classList.remove('show');
+        });
+      }
+    
+      // Crear submenús para cada botón
+
+      crearSubMenu('btnArchivos', [
+      { nombre: 'Institución', url: '{{ url_for("institucion") }}' },
+      { nombre: 'Empresa', url: '{{ url_for("datos_empresa") }}' },
+      
+     
+      // Agrega más opciones aquí
+    ]);
+
+      crearSubMenu('btnCatalogos', [
+        { nombre: 'Departamento', url: '{{ url_for("frameDepartment") }}' },
+        { nombre: 'Horarios', url: '{{ url_for("framehorario") }}' },
+        { nombre: 'Incidencias', url: '{{ url_for("frameIncidencias") }}' },
+        { nombre: 'Puestos', url: '{{ url_for("show_job_positions") }}' },
+      ]);
+      var botonAvisos = document.getElementById('btnAvisos');
+      botonAvisos.addEventListener('click', function() {
+      document.getElementById('contenido').src = '{{ url_for("avisos") }}';
+      });
+  
+      crearSubMenu('btnReportes', [
+        { nombre: 'Checador', url: '{{ url_for("frameChecador") }}' },
+        { nombre: 'Asistencia', url: '{{ url_for("frameReporteAsistencia") }}' },
+        { nombre: 'Empleados', url: '{{ url_for("frameReporteEmpleado") }}' },
+        { nombre: 'Horarios', url: '{{ url_for("frameReporteHorario") }}' },
+        // Agrega más opciones aquí
+      ]);
+    
+
+    crearSubMenu('btnRed', [
+      { nombre: 'Red', url: '{{ url_for("frameRed") }}'},
+      // Agrega más opciones aquí
+    ])  
+    crearSubMenu('btnSeguridad', [
+      { nombre: 'Usuarios', url: '{{ url_for("usuarios") }}'},
+      // Agrega más opciones aquí
+    ]);
+
+    crearSubMenu('btnMant', [
+        { nombre: 'Autorizaciones y Justificaciones', url: '{{ url_for("frameAutorizacion") }}' },
+      ]);
+      
+      // Repite el proceso para los demás botones (btnMant, btnDiasF, btnAvisos, btnRed)
+      // Agregando las opciones correspondientes para cada uno
+
+
+      //AQUI TERMINA LA PARTE DEL SCRIPT DEL SUBMENU, NO BORRAR ESTE MENSAJE POR PRECAUCION
+    });
+
+    document.addEventListener('DOMContentLoaded', function() {
+    var boton = document.querySelector('.btn-sidebar'); // Selecciona el botón por su clase
+    boton.addEventListener('click', function() {
+      var link = document.getElementById('menuStyle'); // Selecciona la etiqueta link por su id
+      var textElements = document.querySelectorAll('.sidebar .brand-text, .sidebar .ittux-text'); // Selecciona los textos a ocultar en el sidebar
+
+      if (link.getAttribute('href') === "{{ url_for('static', filename='css/menu-grande.css') }}") {
+        link.setAttribute('href', "{{ url_for('static', filename='css/menu-pequeno.css') }}"); // Cambia al menú pequeño
+        textElements.forEach(element => element.classList.add('hide-text')); // Oculta el texto
+      } else {
+        link.setAttribute('href', "{{ url_for('static', filename='css/menu-grande.css') }}"); // Cambia al menú grande
+        textElements.forEach(element => element.classList.remove('hide-text')); // Muestra el texto
+      }
+    });
+  });
+    function loadEmpleados(){
+      var frame = $('#contenido');
+      var url = "{{ url_for('frameEmpleados', filename='empleados.html') }}";
+      frame.attr('src',url).show();
+    }
+    function loadChecador(){
+      var frame = $('#contenido');
+      var url = "{{ url_for('botonchecador', filename='botonchecador.html') }}";
+      frame.attr('src',url).show();
+    }
+    function loadDiasFestivos(){
+      var frame = $('#contenido');
+      var url = "{{ url_for('diasFestivos', filename='diasFestivos.html') }}";
+      frame.attr('src',url).show();
+ }
+
+  </script>
+
+<script>
+  function actualizarFechaHora() {
+    var ahora = new Date();
+    var dias = ['DOMINGO', 'LUNES', 'MARTES', 'MIÉRCOLES', 'JUEVES', 'VIERNES', 'SÁBADO'];
+    var meses = ['ENERO', 'FEBRERO', 'MARZO', 'ABRIL', 'MAYO', 'JUNIO', 'JULIO', 'AGOSTO', 'SEPTIEMBRE', 'OCTUBRE', 'NOVIEMBRE', 'DICIEMBRE'];
+
+    var diaSemana = dias[ahora.getDay()];
+    var dia = ahora.getDate();
+    var mes = meses[ahora.getMonth()];
+    var año = ahora.getFullYear();
+    var hora = ahora.getHours().toString().padStart(2, '0');
+    var minuto = ahora.getMinutes().toString().padStart(2, '0');
+    var segundo = ahora.getSeconds().toString().padStart(2, '0');
+
+    var fechaTexto = `${diaSemana}, ${dia} DE ${mes} DE ${año}`.toUpperCase(); // Convertir a mayúsculas por si acaso
+    var horaTexto = `${hora}:${minuto}:${segundo}`.toUpperCase(); // Convertir a mayúsculas
+
+    document.getElementById('fecha-dinamica').textContent = fechaTexto;
+    document.getElementById('hora-dinamica').textContent = horaTexto;
+  }
+
+  // Actualizar la fecha y hora cada segundo
+  setInterval(actualizarFechaHora, 1000);
+</script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    var btnPerfil = document.getElementById('perfil');
+    var iframeContainer = document.getElementById('iframeContainer');
+    var profileFrame = document.getElementById('profileFrame');
+
+    btnPerfil.addEventListener('click', function(event) {
+      iframeContainer.style.display = 'block'; // Muestra el contenedor del iframe
+      var doc = profileFrame.contentDocument || profileFrame.contentWindow.document;
+      // Modificamos el HTML inyectado para que el botón sea transparente
+      doc.open();
+      doc.write('<p style="margin: 0; padding: 0;"><button style="width: 100%; height: 100%; border: none; background-color: transparent; color: #007bff; font-size: 16px; cursor: pointer; padding: 10px; text-align: center;" onclick="window.top.location.href=\'{{ url_for("login") }}\'">Cerrar sesión</button></p>');
+      doc.close();
+      event.stopPropagation(); // Detiene la propagación del evento para evitar que el documento lo capture aquí
+    });
+
+    // Evento para cerrar el iframe si el clic es fuera de él
+    document.addEventListener('click', function(event) {
+      var isClickInside = iframeContainer.contains(event.target);
+
+      if (!isClickInside) {
+        iframeContainer.style.display = 'none';
+      }
+    });
+  });
+</script>
+
+
+
+</body>
+</html>

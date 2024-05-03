@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Horarios ALIOth-ALbeRTO</title>
+    <link rel="stylesheet" id="menuStyle" href="{{ url_for('static', filename='css/horarios.css') }}">
+</head>
+<body class="rectangle">
+    
+<div class="inner-rectangle">
+    <p class="inner-text">Horario</p>
+</div>
+
+<table class="tablainfo">
+    <tr>
+        <th  >NOMBRE: <span id="nombreCompleto" style="color:#1b0587">{{ datos_contratacion.nombre }}</span></th>
+        <th >F.I: {{ datos_contratacion.fecha_de_ingreso }}</th> 
+        <th>DEPARTAMENTO O ÁREA: {{ datos_contratacion.departamento_o_area }}</th>
+        <th style="color: {% if datos_generales.estatus == 'Activo' %}green{% else %}red{% endif %};">STATUS:  <span id="estatus">{{ datos_generales.estatus }}</span></th>
+
+    </tr>
+    <tr>
+        <th >RFC: <span id="rfc" style="color:#1b0587">{{ datos_generales.RFC }}</span></th>  
+        <th >PUESTO:<span id="puesto" style="color:#1b0587">{{ datos_contratacion.puesto }}</span> </th>
+        <td>HORARIO ACTUAL: {{ datos_horario.horario_actual }}</td>
+        <th>
+            <label for="tipo_horario">Tipo de horario:</label>
+            <select id="tipo_horario" name="tipo_horario">
+                <option value="Cerrado" {% if datos_horario.tipo_horario == 'Cerrado' %}selected{% endif %}>Cerrado</option>
+                <option value="Abierto" {% if datos_horario.tipo_horario == 'Abierto' %}selected{% endif %}>Abierto</option>
+            </select>
+        </th>
+        
+
+    </tr>
+        
+    
+</table>
+<div class="periodo">
+    <label for="fecha_inicio">Periodo: de</label>
+    <input type="date" id="fecha_inicio" name="fecha_inicio">
+    <label for="fecha_fin">a</label>
+    <input type="date" id="fecha_fin" name="fecha_fin">
+</div   >
+<label id="datosHorario" style="font-size:12px" >Datos a enviar: {{ datos_horario.horario | tojson }}</label>
+<div class="scrollhorario"><table class="horario">
+    <tr>
+        <th>HORA</th>
+        <th>LUNES</th>
+        <th>MARTES</th>
+        <th>MIERCOLES</th>
+        <th>JUEVES</th>
+        <th>VIERNES</th>
+        <th>SABADO</th>
+        <th>DOMINGO</th>
+    </tr> {% if datos_contratacion.puesto.lower() == 'docente' %}
+    {% set rango_horas = range(5, 21) %}
+{% else %}
+    {% set rango_horas = range(0, 24) %}
+{% endif %}
+
+{% for hora in rango_horas %}
+    <tr>
+        <td>{{ '{:02d}'.format(hora) }}:00</td> <!-- Agrega un 0 al inicio si la hora es de un solo dígito -->
+        {% for dia in range(1, 8) %}
+            {% set clase = '' %}
+            {% if dia in datos_horario.horario and '{:02d}'.format(hora)|string+':00' in datos_horario.horario[dia].Hora_entrada %}
+                {% set clase = 'verde' %}
+            {% elif dia in datos_horario.horario and '{:02d}'.format(hora)|string+':00' in datos_horario.horario[dia].Hora_salida %}
+                {% set clase = 'rojo' %}
+            {% endif %}
+            <td class="{{ clase }}"></td>
+        {% endfor %}
+    </tr>
+{% endfor %}
+
+</table>
+
+    
+        <!-- Repite este bloque para cada hora necesaria, ajustando las clases de color según corresponda -->
+        <!-- ... -->
+        
+        </div>
+        
+
+        <button class="btn-pequeño" id="boton-hecho" onclick="guardarHorario()">Hecho</button>
+        
+        <div id="mensaje-espera">
+            <p>Espere...</p>
+        </div>
+        
+    </div>
+
+<script> 
+let horarios = {};
+function mostrarMensajeEspera() {
+    const mensajeEspera = document.getElementById('mensaje-espera');
+    if (mensajeEspera) {
+        mensajeEspera.style.display = 'block'; // Mostrar el mensaje
+    }
+}
+
+function ocultarMensajeEspera() {
+    const mensajeEspera = document.getElementById('mensaje-espera');
+    if (mensajeEspera) {
+        mensajeEspera.style.display = 'none'; // Ocultar el mensaje
+    }
+}
+
+function cargarHorarios() {
+    const label = document.getElementById('datosHorario');
+    const datosHorarios = label.textContent.replace('Datos a enviar: ', '');
+    // Verificar si hay datos en el label y no están vacíos
+    if (datosHorarios && datosHorarios !== '{}') {
+        horarios = JSON.parse(datosHorarios);
+    }
+}
+
+function actualizarLabel() {
+    const label = document.getElementById('datosHorario');
+    label.textContent = `Datos a enviar: ${JSON.stringify(horarios)}`;
+}
+
+function agregarHoraEntrada(dia, hora) {
+    dia = dia.toString();
+    hora = hora.endsWith(':00') ? hora : hora + ':00';
+    
+    if (!horarios[dia]) {
+        horarios[dia] = { 'Hora_entrada': [], 'Hora_salida': [] };
+    }
+    
+    const horaNumero = parseInt(hora.split(':')[0]);
+    
+    // Agrega la hora de entrada si no está ya presente
+    if (!horarios[dia].Hora_entrada.includes(hora)) {
+        horarios[dia].Hora_entrada.push(hora);
+        // Ordena las horas de entrada para asegurar un chequeo adecuado
+        horarios[dia].Hora_entrada.sort((a, b) => parseInt(a.split(':')[0]) - parseInt(b.split(':')[0]));
+            
+        // Si la hora actual tiene una hora de entrada previa que es al menos dos horas menor, entonces también agrega la actual como salida
+        if (horarios[dia].Hora_entrada.some(h => parseInt(h.split(':')[0]) <= horaNumero - 2)) {
+            horarios[dia].Hora_salida.push(hora);
+        }
+    }
+    
+    actualizarLabel();
+}
+
+function agregarHoraSalida(dia, hora) {
+    dia = dia.toString();
+    hora = hora.endsWith(':00') ? hora : hora + ':00';
+    
+    if (!horarios[dia]) {
+        horarios[dia] = { 'Hora_entrada': [], 'Hora_salida': [] };
+    }
+    
+    // Si la hora seleccionada está en la lista de entradas y la cambiamos a salida,
+    // la eliminamos de entradas y la añadimos a salidas.
+    const indiceEntrada = horarios[dia].Hora_entrada.indexOf(hora);
+    if (indiceEntrada !== -1) {
+        // Elimina de las entradas
+        horarios[dia].Hora_entrada.splice(indiceEntrada, 1);
+    }
+    
+    // Añade a salidas si no está ya presente
+    if (!horarios[dia].Hora_salida.includes(hora)) {
+        horarios[dia].Hora_salida.push(hora);
+        horarios[dia].Hora_salida.sort(); // Ordena las horas de salida
+    }
+    
+    actualizarLabel();
+}
+
+function eliminarHora(dia, hora) {
+    dia = dia.toString();
+    if (horarios[dia]) {
+        horarios[dia].Hora_entrada = horarios[dia].Hora_entrada.filter(h => h !== hora);
+        horarios[dia].Hora_salida = horarios[dia].Hora_salida.filter(h => h !== hora);
+    }
+    actualizarLabel();
+}
+
+function validarFechas() {
+    const fechaInicio = document.getElementById('fecha_inicio').value;
+    const fechaFin = document.getElementById('fecha_fin').value;
+    
+    if (!fechaInicio || !fechaFin) {
+        alert("Debes seleccionar la fecha de inicio y la fecha de fin.");
+        return false;
+    }
+    
+    return true;
+}
+
+function generarHorarios() {
+    // Llamar a la función validarFechas() antes de generar los horarios
+    if (!validarFechas()) {
+        return;
+    }
+
+    const label = document.getElementById('datosHorario');
+    const datosHorarios = label.textContent.replace('Datos a enviar: ', '');
+    const horarios = JSON.parse(datosHorarios);
+
+    const fechaInicio = new Date(document.getElementById('fecha_inicio').value);
+    const fechaFin = new Date(document.getElementById('fecha_fin').value);
+    const periodo = [];
+    
+    // Recorrer cada día dentro del período
+    for (let fecha = new Date(fechaInicio); fecha <= fechaFin; fecha.setDate(fecha.getDate() + 1)) {
+        const fechaDia = new Date(fecha);
+        const diaSemana = fechaDia.getDay(); // Obtener el día de la semana (0 para domingo, 1 para lunes, etc.)
+        
+        // Verificar si el día de la semana está presente en los datos de horario
+        if (diaSemana.toString() in horarios) {
+            const HEC = horarios[diaSemana.toString()].Hora_entrada.map(hora => ({ hora_entrada: new Date(`1970-01-01T${hora}:00Z`), estatus_checador: 'FALTA' }));
+            const HSC = horarios[diaSemana.toString()].Hora_salida.map(hora => ({ hora_salida: new Date(`1970-01-01T${hora}:00Z`), estatus_checador: 'FALTA' }));
+            
+            // Agregar el objeto de fecha con sus horas de entrada y salida al array de período
+            periodo.push({ fecha_dia: fechaDia, HEC: HEC.length > 0 ? HEC : [], HSC: HSC.length > 0 ? HSC : [] });
+        } else {
+            // Si el día no tiene horas de entrada ni salida, agregar el objeto de fecha con arrays vacíos
+            periodo.push({ fecha_dia: fechaDia, HEC: [], HSC: [] });
+        }
+    }
+    
+    // Almacenar el período generado en una variable o realizar alguna acción adicional
+    console.log(periodo);
+}
+
+window.onload = function() {
+    cargarHorarios();
+    const tabla = document.querySelector('.horario');
+    tabla.addEventListener('click', function(e) {
+        const celda = e.target;
+        if (celda.tagName === 'TD' && celda.cellIndex > 0) {
+            const dia = celda.cellIndex;
+            const hora = celda.parentNode.cells[0].textContent.trim();
+            if (!celda.className) {
+                celda.className = 'verde';
+                agregarHoraEntrada(dia, hora);
+            } else if (celda.className === 'verde') {
+                celda.className = 'rojo';
+                agregarHoraSalida(dia, hora);
+            } else if (celda.className === 'rojo') {
+                celda.removeAttribute('class');
+                eliminarHora(dia, hora);
+            }
+        }
+    });
+};
+
+
+function validarFechas() {
+    const fechaInicio = document.getElementById('fecha_inicio').value;
+    const fechaFin = document.getElementById('fecha_fin').value;
+
+    // Verificar si ambas fechas están presentes y son válidas
+    if (!fechaInicio || !fechaFin) {
+        alert("Debes seleccionar la fecha de inicio y la fecha de fin.");
+        return false;
+    }
+
+    // Convertir las fechas en objetos Date para compararlas
+    const fechaInicioObj = new Date(fechaInicio);
+    const fechaFinObj = new Date(fechaFin);
+
+    // Verificar si la fecha de inicio es posterior o igual a la fecha de fin
+    if (fechaInicioObj >= fechaFinObj) {
+        alert("La fecha de inicio debe ser anterior a la fecha de fin.");
+        return false;
+    }
+
+    // Calcular la diferencia en milisegundos entre las fechas
+    const diferenciaTiempo = Math.abs(fechaFinObj - fechaInicioObj);
+
+    // Convertir la diferencia de milisegundos a años
+    const diferenciaAnios = diferenciaTiempo / (1000 * 3600 * 24 * 365);
+
+    // Verificar si la diferencia en años es mayor a 2
+    if (diferenciaAnios > 2) {
+        alert("La diferencia entre la fecha de inicio y la fecha de fin no puede ser mayor a 2 años.");
+        return false;
+    }
+
+    return true;
+}
+
+
+let fechas_dia = []; // Se inicializa la variable fechas_dia como un array vacío
+let periodo = [];
+function generafechachecador() {
+    // Llamar a la función validarFechas() antes de generar los horarios
+    if (!validarFechas()) {
+        return;
+    }
+    
+    const label = document.getElementById('datosHorario');
+    const datosHorarios = label.textContent.replace('Datos a enviar: ', '');
+    const horarios = JSON.parse(datosHorarios);
+    
+    const fechaInicio = new Date(document.getElementById('fecha_inicio').value);
+    const fechaFin = new Date(document.getElementById('fecha_fin').value);
+    
+    const tipoHorarioSelect = document.getElementById('tipo_horario');
+    const tipoHorario = tipoHorarioSelect.value;
+    
+    if (tipoHorario === 'Cerrado') {
+        // Recorrer cada día dentro del período
+        console.log("Se está realizando la fecha en tipo de horario CERRADO");
+        for (let fecha = new Date(fechaInicio); fecha <= fechaFin; fecha.setDate(fecha.getDate() + 1)) {
+            const fechaDia = new Date(fecha);
+            let diaSemana = fechaDia.getDay(); // 0 (domingo) - 6 (sábado)
+            
+            // Convertir el número del día de la semana para que 1 sea lunes y 7 sea domingo
+            diaSemana = (diaSemana === 0) ? 7 : diaSemana;
+            diaSemana = (diaSemana === 7) ? 0 : diaSemana;
+            diaSemana = diaSemana + 1;
+            
+            // Verificar si el día de la semana está presente en los datos de horario
+            if (diaSemana.toString() in horarios) {
+                const HEC = horarios[diaSemana.toString()].Hora_entrada.map(hora => ({ hora_entrada: new Date(`1970-01-01T${hora}:00.000Z`).toISOString(), estatus_checador: 'FALTA' }));
+                const HSC = horarios[diaSemana.toString()].Hora_salida.map(hora => ({ hora_salida: new Date(`1970-01-01T${hora}:00.000Z`).toISOString(), estatus_checador: 'FALTA' }));
+                
+                // Agregar el objeto de fecha con sus horas de entrada y salida al array de período
+                periodo.push({ fecha_dia: fechaDia.toISOString(), HEC: HEC.length > 0 ? HEC : [], HSC: HSC.length > 0 ? HSC : [] });
+            } else {
+                // Si el día no tiene horas de entrada ni salida, agregar el objeto de fecha con arrays vacíos
+                periodo.push({ fecha_dia: fechaDia.toISOString(), HEC: [{ hora_entrada: new Date(`1970-01-01T00:00:00.000Z`).toISOString(), estatus_checador: 'FALTA' }], HSC: [{ hora_salida: new Date(`1970-01-01T00:00:00.000Z`).toISOString(), estatus_checador: 'FALTA' }] });
+            }
+        }
+    } else if (tipoHorario === 'Abierto') {
+        // Recorrer cada día dentro del período para horario abierto
+        console.log("utilizando tipo horario abierto-fechas");
+        for (let fecha = new Date(fechaInicio); fecha <= fechaFin; fecha.setDate(fecha.getDate() + 1)) {
+            const fechaDia = new Date(fecha);
+            // Solo agregar el objeto de período con estatus_checador 'ABIERTO' en HEC y HSC
+            periodo.push({ fecha_dia: fechaDia.toISOString(), HEC: [{ hora_entrada: "", estatus_checador: 'ABIERTO' }], HSC: [{ hora_salida: "", estatus_checador: 'ABIERTO' }] });
+        }
+    }
+    console.log(periodo);
+}
+
+
+
+function guardarHorario() {
+   
+    let totalDiasConEntradas = 0;
+    const rfc = document.getElementById('rfc').textContent;
+    const estatus = document.getElementById('estatus').textContent;
+    const puesto = document.getElementById('puesto').textContent;
+    const nombreCompleto = document.getElementById('nombreCompleto').textContent;
+    const tipoHorarioSelect = document.getElementById('tipo_horario');
+    const tipoHorario = tipoHorarioSelect.value;
+
+    // Crear una copia de los horarios para convertir los números a nombres de días
+    let horariosConNombres = {};
+    if (tipoHorario==='Cerrado'){
+    for (let dia in horarios) {
+        const nombreDia = ['LUNES', 'MARTES', 'MIERCOLES', 'JUEVES', 'VIERNES', 'SABADO', 'DOMINGO'][parseInt(dia) - 1];
+        horariosConNombres[nombreDia] = horarios[dia];
+
+        // Añade '-FALTA' a las horas de entrada y salida si no lo tienen
+        if (horariosConNombres[nombreDia].Hora_entrada.length > 0) {
+            horariosConNombres[nombreDia].Hora_entrada = horariosConNombres[nombreDia].Hora_entrada.map(hora => {
+                return hora.endsWith('-FALTA') ? hora : hora ;
+            });
+            totalDiasConEntradas++;
+        }
+
+        if (horariosConNombres[nombreDia].Hora_salida.length > 0) {
+            horariosConNombres[nombreDia].Hora_salida = horariosConNombres[nombreDia].Hora_salida.map(hora => {
+                return hora.endsWith('-FALTA') ? hora : hora;
+            });
+        }
+    }
+}
+
+    if (tipoHorario==='Cerrado'&&totalDiasConEntradas === 0 ) {
+        alert("No puede subir el horario vacio si el tipo de horario es cerrado. Intente de nuevo.");
+        return;
+    }
+
+    const fechaInicio = document.getElementById('fecha_inicio').value;
+    const fechaFin = document.getElementById('fecha_fin').value;
+
+    // Verificar si ambas fechas están presentes
+    if (!fechaInicio || !fechaFin) {
+        alert("Debes seleccionar la fecha de inicio y la fecha de fin.");
+        return; // Detener el proceso si falta alguna fecha
+    }
+
+    if (fechaInicio > fechaFin) {
+        alert("La fecha de inicio debe ser menor o igual a la fecha de fin.");
+        return; // Detener el proceso si la fecha de inicio es mayor que la fecha de fin
+    }
+    let tieneHorasSalida = false;
+    for (let dia in horariosConNombres) {
+        if (horariosConNombres[dia].Hora_salida && horariosConNombres[dia].Hora_salida.length > 0) {
+            tieneHorasSalida = true;
+            break;
+        }
+    }
+
+    if (tipoHorario==='Cerrado'&& !tieneHorasSalida) {
+        ocultarMensajeEspera(); // Ocultar el mensaje de "Espere..."
+        alert("Debes agregar al menos una hora de salida en un horario cerrado.");
+        return;
+    }
+
+    mostrarMensajeEspera(); // Mostrar el mensaje de "Espere..."
+    generafechachecador();
+
+      // Verificar si hay al menos una hora de salida
+      
+    
+
+
+
+    fetch('/guardarHorario', {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ RFC: rfc, estatus: estatus, puesto: puesto, empleado: nombreCompleto, horarios: horariosConNombres,tipo_horario:tipoHorario, fecha_dias: periodo }),
+    })
+    .then(response => {
+        if (!response.ok) {
+            const errorMessage = `Network response was not ok: ${response.status} ${response.statusText}`;
+            throw new Error(errorMessage);
+        }
+        return response.json();
+    })
+    
+    .then(data => {
+        console.log('Success:', JSON.stringify(data));
+        ocultarMensajeEspera(); // Ocultar el mensaje de "Espere..."
+       
+        alert('El horario se ha guardado con éxito.');
+        window.location.href = '{{ url_for("framehorarioEmpleados") }}';
+    })
+    .catch((error) => {
+        ocultarMensajeEspera(); // Ocultar el mensaje de "Espere..."
+       
+        console.error('Error:', error);
+    });
+}
+</script>
+
+</body>
+</html>

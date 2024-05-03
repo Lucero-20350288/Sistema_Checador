@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Empleados</title>
+  <link rel="stylesheet" href="../static/css/style-dias_festivos.css">
+  <link rel="stylesheet" href="../static/css/jquery-ui.min.css">
+
+</head>
+<body>
+  <div class="ventana">
+    <div class="header">
+      <button class="btn-cerrar" onclick="cerrarVentana()">X</button>
+    </div>
+    <div class="content-botones">
+      <button type="submit" form="formAgregar" formaction="/addDiasFestivos" class="btn-menu"> <img src="{{ url_for('static', filename='iconos/icon_agregar.png') }}" alt="agregar"> <span>Agregar</span></button> 
+      <button type="submit" form="formAgregar" formaction="/deleteDiasFestivos" class="btn-menu" id="btn-eliminar"> <img src="{{ url_for('static', filename='iconos/icon_eliminar.png') }}" alt="eliminar"> <span>Eliminar</span></button> 
+      <button class="btn-menu"> <img src="{{ url_for('static', filename='iconos/icon_cancelar.png') }}" alt="cancelar"> <span>Cancelar</span></button> 
+    </div>
+
+    <div class="contenido-general">
+      <form id="formAgregar" action="" method="POST">
+        <div class="content-form">
+          <div class="content-input">
+            <label>Tipo</label>
+            <select name="tipo" id="tipo-dia">
+              <option value="Dia Inhabil">Dia inhabil</option>
+              <option value="Periodo Vacacional" selected>Periodo Vacacional</option>
+            </select>
+          </div>
+          <div class="content-input" id="fecha-inicio">
+            <label>Fecha Inicio</label>
+            <input type="date" class="form-control" name="fecha_inicio">
+          </div>
+          <div class="content-input" id="fecha-fin">
+            <label>Fecha Fin</label>
+            <input type="date" class="form-control" name="fecha_fin">
+          </div>
+          <div class="content-input">
+            <label>Descripcion</label>
+          <input type="text" class="form-control" name="descripcion">
+          </div>
+        </div>
+      </form>
+
+      <div class="tabla-container">
+        <table class="tabla">
+          <thead>
+            <tr>
+              <th>Tipo</th>
+              <th>Fecha Inicio</th>
+              <th>Fecha Fin</th>
+              <th>Descripcion</th>
+            </tr>
+          </thead>
+          <tbody id="tabla-body">
+            {% if resultado %}
+              {% for dias in resultado %}
+              <tr>
+                <td>{{ dias.tipo }}</td>
+                <td>{{ dias.fecha_inicio }}</td>
+                <td>{{ dias.fecha_fin }}</td>
+                <td>{{ dias.descripcion }}</td>
+              </tr>
+              {% endfor %}
+            {% else %}
+              <!-- Fila vacía inicial por defecto -->
+              <tr>
+                <td colspan="5">&nbsp;</td>
+              </tr>
+            {% endif %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+      
+  </div>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.13.2/jquery-ui.min.js"></script>
+  <script>
+    function cerrarVentana() {
+    var frame = $(".ventana")
+    frame.hide()
+    }
+
+    $('#tipo-dia').on('change', function(){
+      var tipo = $(this).val()
+      $('#fecha-fin').toggle()
+      //if (tipo == 'diaInhabil') {
+        //$('#fecha-fin').hide()
+      //}
+      //console.log(valor)
+    });
+
+    $('#tabla-body').on('click', 'tr', function() {
+        // Remover la clase 'selected' de todas las celdas de la tabla
+        $('#tabla-body td').removeClass('selected');
+        $(this).removeClass('selected');
+        // Agregar la clase 'selected' a todas las celdas de la fila clickeada
+        $(this).find('td').addClass('selected');
+        $(this).addClass('selected');
+    });
+
+    $('#btn-eliminar').click(function(){
+      
+      var fila = document.querySelector('.tabla tbody .selected');
+      var datos = {
+        tipo: fila.cells[0].textContent,
+        fecha_inicio: fila.cells[1].textContent,
+        fecha_fin: fila.cells[2].textContent,
+        descripcion: fila.cells[3].textContent,
+      };
+      // Construir la URL con parámetros de consulta
+      var url = new URL('{{ url_for("deleteDiasFestivos") }}', window.location.origin);
+      Object.keys(datos).forEach(key => url.searchParams.append(key, datos[key]));
+      // Redirigir a ventana_modificar.html con los datos
+      window.location.href = url;
+      // Realizar alguna acción con los textos de las celdas seleccionadas
+      console.log('Textos de las celdas seleccionadas: ', datos);
+    })
+  </script>
+    
+</body>
+</html>

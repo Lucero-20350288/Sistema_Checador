@@ -1,0 +1,154 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  html, body {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    font-family: 'Roboto', sans-serif;
+  }
+  
+  .ventana {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    max-width: 970px;
+    max-height: 560px;
+    background-color: #F5F5F5;
+    border-radius: 5px;
+    border: 2px solid #000;
+    margin: 0 auto;
+    overflow: hidden;
+  }
+  
+  .header {
+    width: 100%;
+    height: 30px;
+    border-radius: 5px 5px 0 0;
+    background-color: #C0E3FD;
+  }
+  
+  .header .btn-cerrar {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 30px;
+    height: 30px;
+    border: none;
+    border-radius: 0 5px 0 0;
+    background-color: red;
+    color: #fff;
+    float: right;
+    cursor: pointer;
+  }
+  
+  .input-contenedor {
+    position: relative;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+  
+  .content-botones {
+    margin-top: 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .btn-menu {
+    width: 85px;
+    height: 70px;
+    margin-left: 50px;
+    background-color: transparent;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .btn-menu.primero {
+    margin-left: 0;
+  }
+  
+  .input-contenedor {
+    position: relative; /* Este contenedor será la referencia para la posición absoluta del .input-box */
+    width: 100%; /* Asume que quieres que ocupe todo el ancho disponible de su contenedor padre */
+    height: 80px; /* Asegúrate de que el contenedor tenga suficiente altura para acomodar el input-box movido hacia arriba */
+    text-align: center; /* Centra el contenido de texto */
+    display: flex; /* Usa flexbox para facilitar la alineación */
+    justify-content: center; /* Centra los elementos flex hijos horizontalmente */
+    align-items: center; /* Centra los elementos flex hijos verticalmente */
+  }
+  
+  .input-box {
+    position: absolute; /* Posicionamiento absoluto respecto al .input-contenedor */
+    top: -200px; /* Ajusta este valor para mover el .input-box hacia arriba según necesites */
+    width: 500px; /* Ancho específico del input */
+    left: calc(50% - 250px);
+    height: 30px;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+  }
+  
+  .input-box.input-empleado {
+    display: block; /* Asegúrate de que este campo sea visible inicialmente */
+  }
+  
+  .input-box.input-rfc {
+    display: none; /* Este campo está oculto inicialmente */
+  }
+  
+  .input-text {
+    position: absolute;
+    top: -195px; /* Ajusta según sea necesario para mover hacia arriba */
+    left: 20%;
+    transform: translateX(-50%); /* Centra horizontalmente respecto a su contenedor */
+    color: #333;
+  }
+  
+  
+  
+  .tabla-container {
+    position: absolute;
+    top: 40%;  /* Ajustar la posición vertical para centrar según el diseño */
+    left: 50%;
+    transform: translateX(-50%);
+    width: 90%;  /* O el ancho que necesites */
+    max-width: 800px;  /* O el máximo ancho que prefieras */
+    height: 390px;  /* Define una altura máxima */
+    overflow-y: auto;  /* Habilita el scroll vertical cuando sea necesario */
+    
+  }
+  
+  
+  .tabla {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .tabla tbody tr:nth-child(odd) {
+    background-color: white;
+  }
+  
+  .tabla tbody tr:nth-child(even) {
+    background-color: #E4F3FF;
+  }
+  
+  .tabla th, .tabla td {
+    border: 3px solid black;
+    padding: 20px;
+    text-align: center;
+  }
+  
+
+
+
+  

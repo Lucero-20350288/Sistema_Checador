@@ -1,0 +1,408 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  html, body {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    font-family: 'Roboto', sans-serif;
+  }
+  
+  .ventana {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    max-width: 970px;
+    max-height: 560px;
+    background-color: #F5F5F5;
+    border-radius: 5px;
+    border: 2px solid #000;
+    margin: 0 auto;
+    overflow: auto;
+  }
+  
+  .header {
+    width: 100%;
+    height: 30px;
+    border-radius: 5px 5px 0 0;
+    background-color: #C0E3FD;
+  }
+  
+  .header .btn-cerrar {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 30px;
+    height: 30px;
+    border: none;
+    border-radius: 0 5px 0 0;
+    background-color: red;
+    color: #fff;
+    float: right;
+    cursor: pointer;
+  }
+  
+  .content-botones {
+    margin-top: 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .btn-menu {
+    width: 85px;
+    height: 70px;
+    margin-left: 10px;
+    background-color: transparent;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    border: none;
+    cursor: pointer;
+  }
+
+  .btn-busc {
+    position: absolute;
+    width: 85px;
+    height: 70px;
+    margin-left: 10px;
+    top: -220px;
+    right: 160px;
+    background-color: transparent;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    border: none;
+    cursor: pointer;   
+  }
+  
+  .btn-menu.primero {
+    margin-left: 0;
+  }
+
+  .btn-area {
+    position: absolute;
+    width: 155px;
+    height: 35px;
+    top: -170px;
+    left: 84px;
+    background-color: transparent;
+    justify-content: center;
+    font-size: 16px;
+    align-items: center;
+    cursor: pointer;   
+    border: none;
+  }
+
+  .texto-departamento{
+    position: absolute;
+    width: 500px;
+    height: 30px;
+    top: -167px;
+    left: 239px;
+    display: flex;
+    align-items: center;
+    padding: 12px;
+    border: 1px solid #ccc;
+    background-color: #fff;
+    border-radius: 5px;
+    font-size: 16px;
+  }
+  
+  .contenedor-buscar {
+    position: relative; /* Este contenedor será la referencia para la posición absoluta del .input-box */
+    width: 100%; /* Asume que quieres que ocupe todo el ancho disponible de su contenedor padre */
+    height: 60px; /* Asegúrate de que el contenedor tenga suficiente altura para acomodar el input-box movido hacia arriba */
+    text-align: center; /* Centra el contenido de texto */
+    display: flex; /* Usa flexbox para facilitar la alineación */
+    justify-content: center; /* Centra los elementos flex hijos horizontalmente */
+    align-items: center; /* Centra los elementos flex hijos verticalmente */
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  #ui-id-1{
+    max-height: 150px;
+    overflow-y: scroll;
+    overflow-x: hidden;
+  }
+
+  #formBuscar {
+    width: 594px;
+    height: 30px;
+    display: flex;
+  }
+  
+  .contenedor-buscar input {
+    position: absolute; /* Posicionamiento absoluto respecto al .input-contenedor */
+    top: -200px; /* Ajusta este valor para mover el .input-box hacia arriba según necesites */
+    width: 500px; /* Ancho específico del input */
+    height: 30px;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+    transform: translate(-28%, -3%);
+    left: calc(50% - 105px); /* Ajusta para que quede a la izquierda del centro */
+
+  }
+
+  .select-busc {
+    position: absolute;
+    width: 500px;
+    top: -170px;
+    border: none;
+    background: none;
+    left: calc(50% - 245px); /* Ajusta para que quede a la izquierda del centro */
+  }
+  
+  .input-text {
+    position: absolute;
+    top: -195px; /* Ajusta según sea necesario para mover hacia arriba */
+    left: 20%;
+    transform: translateX(-50%); /* Centra horizontalmente respecto a su contenedor */
+    color: #333;
+  }
+  
+  .tabla-container {
+    position: fixed;
+    top: 260px;
+    right: 100px;
+    transform: translateX(-50%, -50%);
+    width: 50%;
+    max-height: 270px;
+    overflow-y: auto;
+    
+  }
+  
+  .tabla {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .tabla tbody tr:nth-child(odd) {
+    background-color: white;
+  }
+  
+  .tabla tbody tr:nth-child(even) {
+    background-color: #E4F3FF;
+  }
+  
+  .tabla th, .tabla td {
+    border: 3px solid black;
+    padding: 3px;
+    text-align: center;
+  }
+
+  .tabla td:hover {
+    background-color: #75A8EB;
+    cursor: pointer;
+  }
+
+  /* Estilo para las celdas cuando se pasa el cursor sobre la fila */
+  .tabla td.hovered {
+    background-color: #75A8EB;
+
+  }
+
+
+  .tabla tr.selected td:first-child {
+    background-color: #75A8EB; /* Color de fondo */
+    color: green; /* Color del texto */
+  }
+  
+  
+  .input-image {
+    position: relative;
+    top: -190px;
+    right: -300px;
+    transform: translateY(-50%);
+    width: auto;
+    height: auto;
+  }
+  
+  .input-rangoF {
+    position: absolute;
+    width: 200px;
+    height: 26px;
+    top: 360px; /* Ajusta según sea necesario para mover hacia arriba */
+    left: calc(50% - 320px); /* Ajusta para que quede a la izquierda del centro */
+    transform: translateX(-50%); /* Centra horizontalmente respecto a su contenedor */
+    color: #333;
+    background: none;
+    font-size: 16px;
+  }
+
+  .calendario, .calendario2 {
+    width: 210px;
+    height: 40px;
+    position: absolute;
+    left: calc(50% - 380px); /* Ajusta para que quede a la izquierda del centro */
+  }
+  
+  .calendario {
+    top: 400px;
+  }
+  
+  .calendario2 {
+    top: 460px;
+  }
+  
+  .texto-calendario {
+    color: black;
+    text-align: left;
+    padding-left: 10px;
+    position:relative;
+    left: -50px;
+    top:11px;
+  }
+  
+  .texto-calendario1, .texto-calendario2 {
+    position: absolute;
+    right: calc(100% + 20px);
+    transform: translateY(-50%);
+  }
+  .input-calendario {
+    width: 210px;
+    height: 40px;
+    position: absolute;
+    left: 10px;
+    background-color: rgba(239, 239, 239, 0.6);
+    border: 2px solid black;
+  }
+
+  .select{
+    position: absolute;
+    top: 260px;
+    left: calc(50% - 430px); /* Ajusta para que quede a la izquierda del centro */
+  }
+
+  .incidencias {
+    width: 210px;
+    height: 40px;
+    top: 290px;
+    background-color: rgba(239, 239, 239, 0.6);
+    border: 2px solid black;
+    position: absolute;
+    left: calc(50% - 430px); /* Ajusta para que quede a la izquierda del centro */
+  }
+
+  .btn-crearIncidencia {
+    top: 270px;
+    position: absolute;
+    left: calc(50% - 210px); /* Ajusta para que quede a la izquierda del centro */
+  }
+
+  .incidencias2{
+    top: 140px;
+    position: absolute;
+    left: calc(50% - 300px); /* Ajusta para que quede a la izquierda del centro */
+  }
+
+  .campo-incidencia{
+    height: 30px;
+    width: 430px;
+  }
+
+  .tabla-content-incidencias {
+    position:fixed;
+    top: 200px;
+    right: 260px;
+    transform: translateX(-50%, -50%);
+    width: 50%;
+    max-height: 297.5px; /* Altura máxima del contenedor */
+    overflow-y: auto; /* Agrega una barra de desplazamiento vertical cuando el contenido es demasiado grande */
+  }
+
+  .tabla-incidencias {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  .tabla-incidencias tbody tr:nth-child(odd) {
+    background-color: white;
+  }
+  
+  .tabla-incidencias tbody tr:nth-child(even) {
+    background-color: #E4F3FF;
+  }
+  
+  .tabla-incidencias th, .tabla-incidencias td {
+    border: 3px solid black;
+    padding: 3px;
+    text-align: center;
+  }
+
+  .tabla-incidencias td:hover {
+    background-color: #75A8EB;
+    cursor: pointer;
+}
+
+  .tabla-incidencias tr.selected {
+      background-color: #75A8EB; /* Cambia el color de fondo de la fila seleccionada */
+      color: green /* Cambia el color del texto para que sea legible sobre el color de fondo */
+  }
+
+
+  .tabla-container-todos {
+    position: fixed;
+    top: 190px;
+    right: 100px;
+    transform: translateX(-50%, -50%);
+    width: 50%;
+    max-height: 270px;
+    overflow-y: auto;
+    
+  }
+  .tabla-todos {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .tabla-todos tbody tr:nth-child(odd) {
+    background-color: white;
+  }
+  
+  .tabla-todos tbody tr:nth-child(even) {
+    background-color: #E4F3FF;
+  }
+  
+  .tabla-todos th, .tabla-todos td {
+    border: 3px solid black;
+    padding: 3px;
+    text-align: center;
+  }
+
+  .select-todos{
+    position: absolute;
+    top: 190px;
+    left: calc(50% - 430px); /* Ajusta para que quede a la izquierda del centro */
+  }
+
+  .incidencias-todos {
+    width: 210px;
+    height: 40px;
+    top: 220px;
+    background-color: rgba(239, 239, 239, 0.6);
+    border: 2px solid black;
+    position: absolute;
+    left: calc(50% - 430px); /* Ajusta para que quede a la izquierda del centro */
+  }
+
+  .input-rangoFTodos {
+    position: absolute;
+    width: 200px;
+    height: 26px;
+    top: 320px; /* Ajusta según sea necesario para mover hacia arriba */
+    left: calc(50% - 320px); /* Ajusta para que quede a la izquierda del centro */
+    transform: translateX(-50%); /* Centra horizontalmente respecto a su contenedor */
+    color: #333;
+    background: none;
+    font-size: 16px;
+  }

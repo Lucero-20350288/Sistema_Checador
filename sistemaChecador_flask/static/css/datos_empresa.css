@@ -1,0 +1,153 @@
+ * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    width: 100%;
+  height: 100%;
+  overflow: hidden;
+  font-family: 'Roboto', sans-serif;
+}
+
+.ventana {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    max-width: 970px;
+    max-height: 560px;
+    background-color: #F5F5F5;
+    border-radius: 5px;
+    border: 2px solid #000;
+    margin: 0 auto;
+    overflow: auto;
+  }
+  
+  
+  .header {
+    width: 100%;
+    height: 30px;
+    border-radius: 5px 5px 0 0;
+    background-color: #C0E3FD;
+    padding-top: 5px;
+    padding-left: 5px;
+    position: relative;
+  }
+  
+  .header .btn-cerrar {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 30px;
+    height: 30px;
+    border: none;
+    border-radius: 0 5px 0 0;
+    background-color: red;
+    color: #fff;
+    position: absolute;
+    top: 0; 
+    right: 0; 
+    cursor: pointer;
+  }
+  
+
+
+.content {
+    padding: 20px;
+    text-align: right;
+    width: auto; 
+    max-width: calc(100% - 20px);
+}
+
+.form-container {
+    display: grid;
+    grid-template-columns: auto auto; 
+    gap: 10px; 
+    width: fit-content; 
+    max-width: 100%; 
+    margin-top: 50px; 
+    margin-left: 350px;
+    border: 2px solid #000;
+    padding: 20px;
+}
+
+.form-group {
+    display: flex; 
+    justify-content: flex-end; 
+}
+
+.form-group label {
+    align-self: flex-end; 
+    margin-bottom: 15px;
+    margin-right: 20px;
+}
+
+input[type="text"],
+input[type="file"] {
+    justify-self: start; 
+    padding: 5px;
+    margin-bottom: 10px; 
+    width:350px;
+
+}
+
+.content-botones {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .btn-menu {
+    width: 85px;
+    height: 70px;
+    margin-left: 0;
+    background-color: transparent;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .btn-menu.primero {
+    margin-left: 0;
+  }
+
+  .logo-container {
+    position: absolute;
+    top: calc(50% + 70px); 
+    left: 70px;
+    transform: translateY(-50%);
+    width: 200px;
+    height: 150px; 
+    display: flex;
+    justify-content: center; 
+    align-items: center;
+}
+
+.empresa-logo {
+    width: 90%;
+    height: auto; 
+    border: 2px solid #000;
+    background-color: white;
+}
+.logo-text {
+    position: absolute;
+    top: 40%;
+    left: 17%; 
+    transform: translate(-45%, -100%);
+    z-index: 5;
+    color: #000;
+    font-size: 1rem;
+    text-align: center;
+    width: auto;
+    padding: 5px 10px;
+    border-radius: 5px;
+}
+
+
+
+
+

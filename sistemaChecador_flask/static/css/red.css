@@ -1,0 +1,385 @@
+.network-diagram {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    grid-template-rows: 1fr auto 1fr;
+    justify-items: center;
+    align-items: center;
+    height: 80vh;
+    position: relative;
+    /* Asegúrate de que el diagrama de red tenga posición relativa */
+}
+
+
+.server {
+    grid-column: 2;
+    grid-row: 2;
+    /* Include styles for your server image here */
+}
+
+#DEP_COM, #DEP_MANT, #DEP_ACD, #DEP_POS {
+    background-image: url('../iconos/servidot.png');
+    width: 50px;
+    height: 50px;
+}
+
+#DEP_COM {
+    grid-column: 2;
+    grid-row: 1;
+}
+
+#DEP_MANT {
+    grid-column: 1;
+    grid-row: 2;
+}
+
+#DEP_ACD {
+    grid-column: 3; /* Corregido de 32 a 3 */
+    grid-row: 2;
+}
+
+#DEP_POS {
+    grid-column: 2;
+    grid-row: 3;
+}
+
+.computer {
+    cursor: pointer;
+    padding: 10px;
+    margin: 5px;
+    display: inline-block;
+    border-radius: 0%;
+    width: 20px;
+    /* Puedes ajustar esto según el tamaño deseado */
+    height: 20px;
+    /* Puedes ajustar esto según el tamaño deseado */
+    background-color: #EFEFEF;
+    background-size: cover;
+    /* Asegura que la imagen cubra completamente el círculo */
+    background-position: center;
+    /* Centra la imagen en el círculo */
+}
+
+.active {
+    background-color: green;
+}
+
+.inactive {
+    background-color: red;
+
+}
+
+.server {
+    grid-column: 2;
+    grid-row: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /* Alinea los elementos hijos horizontalmente en el centro */
+    justify-content: center;
+    /* Alinea los elementos hijos verticalmente en el centro */
+}
+
+.server-image {
+    margin-bottom: -20px;
+    /* Ajusta este valor según sea necesario para superponer la imagen sobre el texto */
+    z-index: 1;
+    width: 120px;
+    height: 120px;
+    /* Asegúrate de que la imagen se superponga al texto */
+    transform: translateX(0%);
+}
+
+.server-text {
+    display: block;
+    z-index: 0;
+    /* Asegúrate de que el texto esté debajo de la imagen */
+    position: relative;
+    top: -0px;
+    /* Ajusta este valor para mover el texto más cerca de la imagen */
+    transform: translateX(5%);
+}
+
+
+.flecha {
+    width: 38px;
+    /* Ajustar según el tamaño de tu imagen */
+    height: 38px;
+    /* Ajustar según el tamaño de tu imagen */
+    position: absolute;
+}
+
+.arriba {
+    bottom: 60%;
+    /* Coloca la flecha arriba del elemento */
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.abajo {
+    top: 64%;
+    /* Coloca la flecha debajo del elemento */
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.izquierda {
+    top: 50%;
+    right: 60%;
+    width: 120px;
+    height: 80px;
+    /* Coloca la flecha a la izquierda del elemento */
+    transform: translateY(-50%);
+}
+
+.derecha {
+    top: 50%;
+    left: 60%;
+    width: 120px;
+    height: 80px;
+    /* Coloca la flecha a la derecha del elemento */
+    transform: translateY(-50%);
+}
+
+
+
+.user-label {
+    display: block;
+    text-align: center;
+    margin-top: 55px;
+    /* Ajustar según sea necesario */
+}
+
+.popup {
+    position: absolute;
+    top: 20px;
+    /* Ajustar según necesidad */
+    left: 50%;
+    transform: translateX(-50%);
+    width: 200px;
+    /* Ajustar según necesidad */
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    /* Asegúrate de que sea más alto que otros elementos */
+    text-align: center;
+}
+
+.popup-header,
+.popup-footer {
+    padding: 10px;
+    background-color: #f2f2f2;
+    border-bottom: 1px solid #ccc;
+}
+
+.popup-body {
+    padding: 10px;
+}
+
+.popup-icon {
+    display: inline-block;
+    margin-left: 5px;
+}
+
+.popup-footer button {
+    background-color: #d9534f;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #ffffff;
+}
+
+.window {
+    width: 920px;
+    border: 2px solid #000;
+    background-color: #EFEFEF;
+    box-shadow: 0 0 10px #ffffff;
+}
+
+.title-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #C0E3FD;
+    padding: 10px;
+    border-bottom: 2px solid #000;
+    border-radius: 15px;
+    
+}
+
+.title {
+    font-weight: bold;
+}
+
+.window-controls {
+    display: flex;
+    gap: 5px;
+}
+
+.minimize,
+.maximize,
+.close {
+    border-radius:0px;
+    padding: 2px 8px;
+    cursor: pointer;
+    background-color: #C0E3FD;
+}
+
+.minimize:hover,
+.maximize:hover,
+.close:hover {
+    background-color: #ccc;
+}
+
+.content-area {
+    padding: 20px;
+    /* Aquí puedes añadir más estilo al contenido */
+}
+
+.inner-box {
+    border: 2px solid #000;
+    margin: 20px;
+    /* Ajusta según necesites espacio alrededor del cuadro interior */
+    padding: 20px;
+    /* Espacio interior para el contenido dentro del cuadro */
+    height: calc(100% - 40px);
+    /* Ajusta la altura para tomar en cuenta el margen y el padding */
+}
+
+.header-container {
+    border: 2px solid #000;
+    padding: 10px;
+    margin-bottom: 20px;
+    background-color: #E4F3FF;
+    /* Espacio antes del área de texto */
+}
+
+.text-area-header {
+    text-align: center;
+    font-weight: ROBOTO;
+}
+
+.input-aviso {
+    width: calc(100%);
+    /* Resta el padding del inner-box */
+    height: 210px;
+    /* Altura fija para el textarea */
+    margin-bottom: 20px;
+    padding: 10px;
+    /* Padding para el texto dentro del textarea */
+    border: 2px solid #000;
+    box-sizing: border-box;
+    background-color: #EFEFEF;
+    resize: none;
+    font-size: 20px;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.button-area {
+    display: flex;
+    justify-content: space-between;
+    padding: 0 10px;
+    background-color: #EFEFEF;
+    /* Opcional: para alinear con el padding del textarea */
+}
+
+.btn {
+    padding: 10px 20px;
+    border: 2px solid #000;
+    background-color: #fff;
+    cursor: pointer;
+}
+
+.btn-aviso {
+    background-color: #E4F3FF;
+    font-weight: ROBOTO;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.btn-general {
+    background-color: #E4F3FF;
+    font-weight: ROBOTO;
+    border-radius: 10px; 
+    cursor: pointer;
+}
+
+.window, .inner-box, .header-container {
+    border-radius: 20px; /* Esto redondeará las esquinas de los elementos */
+    /* Ajusta el valor de 10px según el grado de redondeo que desees */
+}
+
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+.modal-content {
+    background-color: #EFEFEF;
+    margin: 15% auto; /* 15% from the top and centered */
+    padding: 20px;
+    border: 2px solid #000000;
+    width: 40%; /* Could be more or less, depending on screen size */
+    text-align: center;
+}
+
+.close {
+    background-color: #C0E3FD;
+    color: #000000;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    border: 2px solid #000000;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.resultado-busqueda {
+    position: absolute;
+    background-color: white;
+    border: 1px solid #ddd;
+    border-top: none;
+    max-height: 200px; /* Altura máxima antes de que el desplazamiento sea necesario */
+    width: 300px; /* O ajusta según el diseño de tu formulario */
+    overflow-y: auto; /* Habilita el desplazamiento vertical si el contenido excede la altura máxima */
+    display: none; /* Oculto por defecto */
+    z-index: 1000; /* Asegura que el menú se muestre encima de otros elementos */
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1); /* Opcional: sombra para mayor visibilidad */
+}
+
+.resultado-busqueda div {
+    padding: 8px 10px;
+    cursor: pointer;
+    white-space: nowrap; /* Evita que el texto se envuelva y mantiene la uniformidad */
+}
+
+.resultado-busqueda div:hover {
+    background-color: #f9f9f9;
+}
+
+

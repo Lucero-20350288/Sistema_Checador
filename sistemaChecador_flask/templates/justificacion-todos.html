@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="../static/css/autorizacion-justificaciones.css">
+<title>Justificaciones</title>
+<script
+  src="https://code.jquery.com/jquery-3.7.1.min.js"
+  integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
+  crossorigin="anonymous">
+  </script>
+</head>
+<body>
+
+    <div class="ventana">
+        <div class="header">
+        <button class="btn-cerrar" onclick="cerrarVentana()">X</button>
+    </div>
+
+    <div class="content-botones">
+        <button onclick="mostrarTodos()" class="btn-menu primero">
+            <img src="{{ url_for('static', filename='iconos/icon_empleados.png') }}" alt="todos">
+            <span>Todos</span>
+        </button>
+    </div>
+    
+    <div>
+        <br>
+        <label class="select-todos" for="incidencia">Seleccionar incidencia:</label>
+        <select id="incidencia" name="incidencia" class="incidencias-todos">
+          <!-- Opciones de incidencias se cargarán dinámicamente aquí -->
+        </select>
+        <br>
+    </div>
+  
+    <select class="input-rangoFTodos" name="rangoFechas" id="rangoFechas">
+        <option value="Rango Fechas" selected>Rango de fechas</option>
+        <option value="Fecha única">Fecha única</option>
+    </select>
+    <div class="calendario">
+    <label for="fecha_inicio" class="texto-calendario">De:</label>
+    <input type="date" id="fecha_inicio" name="fecha_inicio" class="input-calendario">
+    </div>
+
+    <div class="calendario2">
+    <label id="text-al" for="fecha_fin" class="texto-calendario">Al:</label>
+    <input type="date" id="fecha_fin" name="fecha_fin" class="input-calendario">
+    </div>
+
+
+    <div class="tabla-container-todos">
+        <table id="tablaResultados" class="tabla-todos">
+            <thead>
+                <tr>
+                    <th>Empleado</th>
+                    <th>Incidencia</th>
+                    <th>Fecha Inicial</th>
+                    <th>Fecha Final</th>
+                    <!-- Agregar más columnas si es necesario -->
+                </tr>
+            </thead>
+            <tbody id="tabla-resultados-body">
+                <!-- Los resultados se llenarán aquí dinámicamente -->
+            </tbody>
+        </table>
+    </div>
+
+  
+  </div>
+
+  <script>
+    $('#rangoFechas').on('change', function(){
+      var tipo = $(this).val()
+      $('#fecha_fin, #text-al').toggle()
+    });
+
+
+
+    function cerrarVentana() {
+        window.location.href = '/frameAutorizacion';
+    }
+
+
+    //cargar incidencias al select
+    function cargarIncidencias() {
+    fetch('/obtener-incidencias')
+        .then(response => response.json())
+        .then(incidencias => {
+            const selectIncidencias = document.getElementById('incidencia');
+            incidencias.forEach(incidencia => {
+                const option = document.createElement('option');
+                option.value = incidencia.id; // Asigna el id como valor de la opción
+                option.textContent = incidencia.incidencia; // Asigna la descripción como texto de la opción
+                selectIncidencias.appendChild(option);
+            });
+        });
+    }
+
+    cargarIncidencias(); // Cargar las incidencias al cargar la página
+
+
+
+
+
+
+
+
+    function mostrarTodos() {
+        const incidenciaSeleccionada = document.getElementById('incidencia');
+        const incidenciaTexto = incidenciaSeleccionada.options[incidenciaSeleccionada.selectedIndex].text;
+
+
+        const tipoFecha = document.getElementById('rangoFechas').value;
+        let fechaInicio, fechaFin;
+
+        if (tipoFecha === 'Fecha única') {
+            fechaInicio = document.getElementById('fecha_inicio').value;
+            fechaFin = fechaInicio; // Si es fecha única, la fecha fin es la misma que la de inicio
+        } else {
+            fechaInicio = document.getElementById('fecha_inicio').value;
+            fechaFin = document.getElementById('fecha_fin').value;
+        }
+
+        // Aquí deberías hacer una solicitud al servidor para obtener los empleados con los criterios seleccionados
+        // y llenar la tabla con los resultados.
+        // Supongamos que la función para obtener los datos se llama obtenerEmpleados y recibe la incidencia, la fecha de inicio y la fecha de fin como parámetros
+        obtenerEmpleados(incidenciaTexto, fechaInicio, fechaFin);
+    }
+
+    function obtenerEmpleados(incidencia, fechaInicio, fechaFin) {
+        fetch(`/obtener-empleados?incidencia=${incidencia}&fecha_inicial=${fechaInicio}&fecha_final=${fechaFin}`)
+            .then(response => response.json())
+            .then(empleados => {
+                const tablaBody = document.getElementById('tabla-resultados-body');
+                tablaBody.innerHTML = ''; // Limpiar la tabla antes de llenarla con los nuevos resultados
+                empleados.forEach(empleado => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${empleado.nombre}</td>
+                        <td>${empleado.incidencia}</td>
+                        <td>${empleado.fecha_inicial}</td>
+                        <td>${empleado.fecha_final}</td>
+                    `;
+                    tablaBody.appendChild(row);
+                });
+            });
+    }
+
+
+   
+    
+
+  </script>
+
+</body>
+</html>

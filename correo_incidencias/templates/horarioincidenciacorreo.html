@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Notificación de Incidencias</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/horarios.css') }}">
+    <style>
+        #alrededorcontenedor::-webkit-scrollbar {
+            width: 12px;
+        }
+        
+        #alrededorcontenedor::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        
+        #alrededorcontenedor::-webkit-scrollbar-thumb {
+            background-color: #4caf50; /* Cambia el color del scroll a azul */
+            border-radius: 6px;
+        }
+        
+        #alrededorcontenedor::-webkit-scrollbar-thumb:hover {
+            background-color: #258c80; /* Cambia el color del scroll al pasar el cursor a un tono más oscuro de azul */
+        }
+        
+        ::-webkit-scrollbar {
+            width: 12px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background-color: #008cba; /* Cambia el color del scroll */
+            border-radius: 6px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background-color: #027496; /* Cambia el color del scroll al pasar el cursor */
+        }
+        .container {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap; /* Permite que las columnas se ajusten en pantallas más pequeñas */
+            
+        }
+
+        .column {
+            flex: 0 0 30%; /* Cada columna tomará hasta 30% del contenedor, ajusta según tu diseño */
+            margin: 10px; /* Espacio entre las columnas */
+        }
+        .form-group {
+            margin-bottom: 15px;
+            display: flex;
+            flex-direction: column;
+        }
+        label {
+            margin-bottom: 5px;
+        }
+        input[type="text"],
+        input[type="date"],
+        input[type="time"],input[type="email"],
+        textarea,
+        .Table input[type="text"]    {
+            width: 100%;
+            padding: 5px;
+            box-sizing: border-box; /* Asegura que el padding no afecte el ancho total */
+            border: 2px solid #0b7878;
+        }
+        textarea {
+            resize: vertical; /* Permite que el usuario cambie la altura del textarea */
+        }
+        .hover-effect:hover {
+        background-color: red; /* Color rojo al hacer hover */
+    }
+        .btn-agregar {
+            background-color: #4CAF50; /* Verde */
+            color: white;
+            padding: 10px 20px;
+            text-align: center;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 10px;
+            width: 100%; /* Ajusta el ancho del botón para que coincida con los inputs */
+        }
+        .btn-agregar:hover {
+            background-color: #45a049;
+        }
+        #boton-hecho:hover {
+            background-color: #0b7878;
+          
+        }
+        #boton-hecho {
+            background-color: #0b7878;
+            margin-top:20px;
+        }
+        #boton-correo {
+            background-color: #4CAF50;
+            margin-top: 20px;
+        }
+        .btn-agregar:hover {
+            background-color: #45a049;
+        }
+        .table-container {
+            width: 100%;
+           
+        }
+        .Table {
+            width: 100%;
+            margin-top: 10px; /* Espacio entre el botón y la tabla */
+        }
+        .Table td {
+            padding: 5px; /* Ajusta el padding de las celdas para alinear con los inputs */
+        }
+       
+    </style>
+</head>
+<body class="rectangle" data-header-image="{{ url_for('static', filename='img/machiote.png') }}" data-footer-image="{{ url_for('static', filename='img/piedepagina.png') }}">
+    
+    <div class="inner-rectangle">
+        <p class="inner-text">Notificación de Incidencias</p>
+    </div>
+    <div id="alrededorcontenedor" style="padding: 5px; margin-left: 1%; margin-right: 1%; height: 800px; overflow: auto;">
+   
+     <!-- Contenedor principal -->
+     <div class="container">
+        <!-- Primera columna (Asunto e Introducción) -->
+        <div class="column">
+            <div class="form-group">
+                <label for="asunto">Asunto:</label>
+                <input type="text" id="asunto" name="asunto" required>
+            </div>
+            <div class="form-group">
+                <label style=" margin-left: 1%; margin-right: 1%;" for="correoElectronico">Correo electrónico: </label>
+                <input  style="padding: 5px; margin-left: 1%; margin-right: 1%;" type="email" id="correoElectronico" placeholder="Destinatario" name="correoElectronico" required>
+            </div>
+            <div class="form-group">
+                <label for="periodo">Período:</label>
+                <input type="text" id="periodo" name="periodo" placeholder="del 1 de febrero al 22 de febrero del 2024" required>
+            </div>
+        </div>
+        <div class="column">
+            <div class="form-group">
+                <label for="fecha2">Fecha:</label>
+                <input type="date" id="fecha2" name="fecha2" required >
+            </div>
+            <div class="form-group">
+                <label for="hora2">Hora:</label>
+                <input type="time" id="hora2" name="hora2" required>
+            </div>
+            <div class="form-group">
+                <label for="nombreEmpleado">Nombre del Empleado:</label>
+                <input type="text" id="nombreEmpleado" name="nombreEmpleado" required>
+            </div>
+        </div>
+        <!-- Segunda columna (Nombre del empleado y Descripción final) -->
+        <div class="column">
+            
+            
+                <div class="form-group">
+                    <label for="tipo">Tipo:</label>
+                    <select id="tipo0" name="tipo">
+                        <option value="tipo1">Tipo 1 - RETARDO</option>
+                        <option value="tipo2">Tipo 2 - FALTA</option>
+                    </select>
+                </div>
+                    <div class="form-group">
+                        <label for="firma">Cambiar Firma (opcional):</label>
+                        <input type="file" id="firma" name="firma" accept="image/*" onchange="previewFirma()">
+                        <img id="preview-firma" src="{{ url_for('static', filename='img/firmadefault.png') }}" alt="Vista previa de la firma" style="width: 150px; height: 150px;">
+                    </div>
+              
+                
+            
+        </div>
+
+        <!-- Tercera columna (Período y Atentamente) -->
+        <div class="column">
+            <input type="checkbox" id="toggleCredentials">
+<label for="toggleCredentials">Cambiar correo y contraseña</label>
+
+<!-- Contenedor para los campos de correo y contraseña -->
+<div id="credentialsContainer" style="display: none;">
+    <div class="form-group">
+        <label for="correo_electronico">Correo electrónico:</label>
+        <input type="email" id="correo_electronico" name="correo_electronico" placeholder="correo@example.com" value="{{ correo_electronico }}">
+    </div>
+    <div class="form-group">
+        <label for="password">Contraseña:</label>
+        <input type="password" id="password" name="password" placeholder="Contraseña" value="{{ password }}">
+    </div>
+</div>
+    </div>
+
+   
+    </div>
+     <div class="table-container">
+        <button type="button" class="btn-agregar" onclick="agregarFila()">Agregar Incidencia</button>
+        <table class="Table">
+            <thead>
+                <tr>
+                    <th>N°</th>
+                    <th>Fecha</th>
+                    <th>Nombre</th>
+                    <th>Hora</th>
+                    <th>Incidencia</th>
+                </tr>
+            </thead>
+            <tbody id="tbodyIncidencias">
+                <!-- Las filas se añadirán aquí dinámicamente -->
+            </tbody>
+        </table>
+    <button class="btn-pequeño" id="boton-hecho" onclick="hecho()">Descargar PDF</button> 
+    <button class="btn-pequeño" id="boton-correo" onclick="enviarCorreo()">Enviar Correo</button>
+  
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.3.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jspdf.plugin.autotable.min.js"></script>
+
+
+    
+    <script>
+
+            // Obtén una referencia al checkbox y al contenedor de credenciales
+   // Obtén una referencia al checkbox y al contenedor de credenciales
+const toggleCredentials = document.getElementById('toggleCredentials');
+const credentialsContainer = document.getElementById('credentialsContainer');
+
+// Agrega un evento change al checkbox para mostrar u ocultar los campos de correo y contraseña
+toggleCredentials.addEventListener('change', function() {
+    if (toggleCredentials.checked) {
+        credentialsContainer.style.display = 'block';
+    } else {
+        credentialsContainer.style.display = 'none';
+    }
+});
+
+        let firmaBase64 = null; // Para almacenar la firma convertida a base64
+        let contadorFilas = 0;
+
+        document.addEventListener('DOMContentLoaded', function() {
+            toggleFechaHora();
+            previewFirma();
+            // Asigna el evento 'change' al select de tipo para gestionar la visibilidad de los campos
+            document.getElementById('tipo0').addEventListener('change', toggleFechaHora);
+            agregarFila(); // Agrega una fila cuando la página se carga
+        });
+        function toggleFechaHora() {
+            // Obtiene el valor seleccionado en el dropdown
+            const tipoSeleccionado = document.getElementById('tipo0').value;
+            
+            // Obtiene los campos de fecha y hora
+            const fecha2 = document.getElementById('fecha2');
+            const hora2 = document.getElementById('hora2');
+            
+            // Habilita o deshabilita los campos según el tipo seleccionado
+            if (tipoSeleccionado === 'tipo2') {
+                fecha2.disabled = false;
+                hora2.disabled = false;
+            } else {
+                fecha2.disabled = true;
+                hora2.disabled = true;
+                
+                // Opcionalmente puedes limpiar los campos si deseas
+                fecha2.value = '';
+                hora2.value = '';
+            }
+        }
+        function agregarFila() {
+            if (contadorFilas >= 10) {
+                alert("No puedes agregar más de 10 incidencias.");
+                return;
+            }
+    
+            contadorFilas++;
+            const tbody = document.getElementById('tbodyIncidencias');
+            const nuevaFila = tbody.insertRow();
+            const celdaNumero = nuevaFila.insertCell(0);
+            const celdaFecha = nuevaFila.insertCell(1);
+            const celdaNombre = nuevaFila.insertCell(2);
+            const celdaHora = nuevaFila.insertCell(3);
+            const celdaIncidencia = nuevaFila.insertCell(4);
+    
+            celdaNumero.textContent = contadorFilas;
+            celdaNumero.className = 'hover-effect';
+            celdaNumero.onclick = function() { eliminarFila(this.parentNode.rowIndex - 1); };
+    
+            celdaFecha.innerHTML = '<input type="date" name="fecha[]" >'; // Valor predeterminado
+            celdaNombre.innerHTML = '<input type="text" name="nombre[]">'; // Valor predeterminado
+            celdaHora.innerHTML = '<input type="time" name="hora[]" >'; // Valor predeterminado
+            celdaIncidencia.innerHTML = '<input type="text" name="incidencia[]" >'; // Valor predeterminado
+        }
+    
+        function eliminarFila(rowIndex) {
+            document.getElementById('tbodyIncidencias').deleteRow(rowIndex);
+            contadorFilas--;
+            actualizarNumeracion();
+        }
+    
+        function actualizarNumeracion() {
+            const rows = document.querySelectorAll('#tbodyIncidencias tr td:first-child');
+            rows.forEach((td, index) => {
+                td.textContent = index + 1;
+            });
+        }
+
+        
+        function previewFirma() {
+            const input = document.getElementById('firma');
+            const preview = document.getElementById('preview-firma');
+            
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    preview.src = e.target.result;
+                    preview.style.display = 'block';
+                    firmaBase64 = e.target.result; // Guarda la firma en formato base64
+                }
+                reader.readAsDataURL(input.files[0]);
+            } else {
+                // Si el input está vacío, busca la imagen en el atributo src de la vista previa
+                const previewSrc = preview.src;
+                if (previewSrc) {
+                    firmaBase64 = previewSrc;
+                } else {
+                    firmaBase64 = null; // Si no hay imagen, firmaBase64 se establece como null
+                }
+            }
+        }
+        
+
+        async function hecho(enviarCorreo = false) {
+            try {
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF();
+                doc.setFontSize(10);
+        
+                // Cargar imágenes dinámicamente
+                const headerImageUrl = document.body.getAttribute('data-header-image');
+                const footerImageUrl = document.body.getAttribute('data-footer-image');
+                const headerImgData = await loadImageAsBase64(headerImageUrl);
+                const footerImgData = await loadImageAsBase64(footerImageUrl);
+        
+                // Agregar el encabezado y el pie de página en cada página
+                doc.addImage(headerImgData, 'PNG', 10, 10, 190, 30);
+                doc.addImage(footerImgData, 'PNG', 10, 250, 190, 30);
+        
+                let introduccion = "";
+                let descfinal = "";
+                  // Dentro de la función `hecho()`
+                const fecha2 = document.getElementById('fecha2').value;
+                const hora2 = document.getElementById('hora2').value;
+
+                // Y luego los usas en la generación del PDF donde necesites estos valores
+
+                const tipoSeleccionado = document.getElementById('tipo0').value;
+                if (tipoSeleccionado === 'tipo1') {
+                    introduccion = "Por este medio le saludo cordialmente, asimismo conforme al Artículo 80º, del inciso a) y Artículo 25º Fracción II del Reglamento de las Condiciones Generales del Trabajo el Personal de la Secretaría de Educación Pública, le informo el reporte de asistencia, generado por el sistema de control y registro en el que se detectaron las siguientes incidencias:";
+                    descfinal = "De acuerdo a lo previsto en el Artículo 83º del Reglamento de las Condiciones Generales del Trabajo el Personal de la Secretaría de Educación Pública, cuenta con un término de 10 días hábiles contados a partir de la recepción de la presente notificación, para presentar el documento probatorio de la justificación de las incidencias antes descritas, de lo contrario será acreedor a lo dispuesto en el Artículo 80º.";
+                   
+                    
+                } else {
+                    
+                    const fechaInput = document.getElementById('fecha2').value; // yyyy-mm-dd
+                    const horaInput = document.getElementById('hora2').value; // HH:MM
+
+                    // Convertir la fecha al formato deseado (6/MARZO/2024)
+                    const fechaParts = fechaInput.split('-'); // yyyy, mm, dd
+                    const meses = ['ENERO', 'FEBRERO', 'MARZO', 'ABRIL', 'MAYO', 'JUNIO', 'JULIO', 'AGOSTO', 'SEPTIEMBRE', 'OCTUBRE', 'NOVIEMBRE', 'DICIEMBRE'];
+                    const mes = meses[parseInt(fechaParts[1], 10) - 1]; // Convertimos mm a índice de array y obtenemos el nombre del mes
+                    const fechaFormateada = `${parseInt(fechaParts[2], 10)}/${mes}/${fechaParts[0]}`; // dd/MES/yyyy
+                    doc.moveTo(20, 202).lineTo(20 + 60, 202).stroke(); // Renderizar la línea
+
+                    // ... código previo donde necesites insertar la fecha y la hora
+                    // Por ejemplo, en la parte donde se establece `descfinal`
+                    descfinal = `NOTAS:\n*SE TIENE HASTA EL DIA: ${fechaFormateada} A LAS ${horaInput} HORAS. PARA PRESENTAR SU JUSTIFICANTE\n*De acuerdo al Artículo 80 inciso f), g) y h) del reglamento de Condiciones Generales de Trabajo del Personal de la Secretaría de Educación Publica.\nFECHA DE APLICACION DE FALTA PARA SU RESPECTIVO DESCUENTO:\n${fechaFormateada} `;
+            
+                    introduccion = "Por este medio le saludo cordialmente, asimismo le informo que de acuerdo al reporte de asistencia generado por el sistema de control y registro se detectaron las siguientes incidencias: ";
+                      }
+
+                // Información del formulario
+                const asunto = document.getElementById('asunto').value;
+                const nombreEmpleado = document.getElementById('nombreEmpleado').value;
+                const periodo = document.getElementById('periodo').value;
+                
+                // Agregar texto al documento
+                const fechaActual = new Date().toLocaleDateString('es-MX', { year: 'numeric', month: 'long', day: 'numeric' });
+                doc.text(`San Juan Bautista Tuxtepec, Oaxaca a: ${fechaActual}`, 108, 40);
+                doc.text(`Asunto: ${asunto}`, 136, 50);
+                const texto = `Asunto: ${asunto}`;
+                const longitudTexto = 10 * 5; // Estimación del ancho promedio de un carácter en Arial tamaño 10
+
+                // Dibujar la línea debajo del texto
+                doc.moveTo(136, 52) // Mover al punto inicial debajo del texto
+                   .lineTo(136 + longitudTexto, 52) // Dibujar línea hasta el punto final
+                   .stroke(); // Renderizar la línea
+
+                doc.text(` ${nombreEmpleado}`, 20, 55);
+                doc.text(`PRESENTE`, 20, 60);
+        
+                // Descripción o Introducción
+                const lines = doc.splitTextToSize(introduccion, 170);
+                let currentY = 65 + 5; // Agregar 5 puntos después de "PRESENTE"
+                doc.text(lines, 20, currentY);
+        
+                doc.text(`PERIODO:      ${periodo}`, 60, 86);
+                doc.moveTo(60, 87).lineTo(60 + longitudTexto+30, 87).stroke(); // Renderizar la línea
+
+                doc.text(` ${nombreEmpleado}`, 20, 55);      
+
+
+                // Posición inicial de la tabla después de "PERIODO" más 5 puntos de espacio
+                let tableStartY = currentY + 20;
+        
+                // Agregar la tabla
+                /*
+                doc.autoTable({
+                    startY: tableStartY,
+                    head: [['N°', 'Fecha', 'Nombre', 'Hora', 'Incidencia']],
+                    body: Array.from(document.getElementById('tbodyIncidencias').rows).map((row, index) => ([
+                        index + 1,
+                        row.cells[1].querySelector('input').value,
+                        row.cells[2].querySelector('input').value,
+                        row.cells[3].querySelector('input').value,
+                        row.cells[4].querySelector('input').value
+                    ])),
+                });*/
+                doc.autoTable({
+                    startY: tableStartY,margin: { left: 20, right: 20 }, 
+                    head: [['N°', 'Fecha', 'Nombre', 'Hora', 'Incidencia']],
+                    body: Array.from(document.getElementById('tbodyIncidencias').rows).map((row, index) => ([
+                        index + 1,
+                        row.cells[1].querySelector('input').value,
+                        row.cells[2].querySelector('input').value,
+                        row.cells[3].querySelector('input').value,
+                        row.cells[4].querySelector('input').value
+                    ])),
+                    headStyles: {
+                        fillColor: [255, 255, 255], // Fondo blanco para el encabezado
+                        textColor: [0, 0, 0], // Texto negro para el encabezado
+                        lineColor: [0, 0, 0], // Líneas negras para el encabezado
+                        lineWidth: 0.5 // Grosor de las líneas
+                    },
+                    bodyStyles: {
+                        fillColor: [255, 255, 255], // Fondo blanco para el cuerpo
+                        textColor: [0, 0, 0], // Texto negro para el cuerpo
+                        lineColor: [0, 0, 0], // Líneas negras para el cuerpo
+                        lineWidth: 0.5 // Grosor de las líneas
+                    }
+                });
+                
+        
+                // Añadir la firma, si está presente
+                if (firmaBase64) {
+                    let y = 205;
+                    doc.addImage(firmaBase64, 'PNG', 90, y, 30, 30);
+                }
+                
+                const pageWidth = 210; // Ancho del documento A4 en mm
+        const leftMargin = 20; // Margen izquierdo en mm
+        const usableWidth = pageWidth - 2 * leftMargin; // Ancho utilizable
+
+        // Textos que queremos centrar
+        const atentamenteText = "ATENTAMENTE";
+        const recursosHumanosText = "Recursos Humanos";
+
+        // Calcular la posición X para centrar el texto
+        const atentamenteTextWidth = doc.getStringUnitWidth(atentamenteText) * doc.internal.getFontSize() / doc.internal.scaleFactor;
+        const recursosHumanosTextWidth = doc.getStringUnitWidth(recursosHumanosText) * doc.internal.getFontSize() / doc.internal.scaleFactor;
+
+        const atentamenteX = (pageWidth - atentamenteTextWidth) / 2; // X position for centered text
+        const recursosHumanosX = (pageWidth - recursosHumanosTextWidth) / 2; // X position for centered text
+
+        const lines1 = doc.splitTextToSize(descfinal, 170);
+         doc.text(lines1, 20, 180);
+
+        doc.text(atentamenteText, atentamenteX, 240);
+        doc.text(recursosHumanosText, recursosHumanosX, 245);
+
+        if (enviarCorreo) {
+            // Retorna los datos del PDF como un blob si la función fue llamada para enviar correo
+            return doc.output('blob');
+        } else {
+            // Guarda el PDF si la función fue llamada para descargar el archivo
+            doc.save('Notificacion_de_Incidencias.pdf');
+            return null; // No es necesario retornar nada si se está descargando el PDF
+        }
+            } catch (error) {
+                console.error("Error al generar el PDF: ", error);
+                alert("Hubo un problema al generar el PDF. Por favor, inténtelo de nuevo.");
+            }
+        }
+    
+        // Función para cargar una imagen y convertirla a base64
+        function loadImageAsBase64(url) {
+            return new Promise((resolve, reject) => {
+                const xhr = new XMLHttpRequest();
+                xhr.onload = function() {
+                    const reader = new FileReader();
+                    reader.onloadend = function() {
+                        resolve(reader.result);
+                    };
+                    reader.readAsDataURL(xhr.response);
+                };
+                xhr.onerror = reject;
+                xhr.open('GET', url);
+                xhr.responseType = 'blob';
+                xhr.send();
+            });
+        }
+        async function enviarCorreo() {
+            // Obtener correo electrónico y contraseña del formulario
+            const correoElectronico = document.getElementById('correo_electronico').value;
+            const password = document.getElementById('password').value;
+            const correoElectronicoEmpleado = document.getElementById('correoElectronico').value;
+            const asunto = document.getElementById('asunto').value;
+            const nombreEmpleado = document.getElementById('nombreEmpleado').value;
+            
+            if ( !correoElectronicoEmpleado ) {
+                alert('Todos los campos son obligatorios. Por favor, ingrese el correo electronico Destinatario.');
+                return;
+            }
+            if (  !asunto) {
+                alert('Todos los campos son obligatorios. Por favor, ingrese el asunto.');
+                return;
+            }
+            if (  !nombreEmpleado) {
+                alert('Todos los campos son obligatorios. Por favor, ingrese el nombre del empleado.');
+                return;
+            }
+            // Verificar si los campos están vacíos
+            if (!correoElectronico || !password) {
+                alert('Valor correo electrónico y contraseña vacíos. Por favor, chequee variables.ini (o active "cambiar contraseña y correo" e ingrese manualmente los datos).');
+                return;
+            }
+        
+            try {
+                // Generar el PDF como un blob
+                const pdfBlob = await hecho(true);
+        
+                // Crear un objeto FormData para enviar los datos
+                const formData = new FormData();
+                formData.append('pdf', pdfBlob, 'Notificacion_de_Incidencias.pdf');
+                formData.append('correoElectronico', correoElectronico);
+                formData.append('password', password);
+                formData.append('correoElectronicoEmpleado', correoElectronicoEmpleado);
+                formData.append('asunto', asunto);
+                formData.append('nombreEmpleado', nombreEmpleado);
+        
+                // Realizar la petición HTTP para enviar el correo con el PDF adjunto
+                const response = await fetch('/ruta_para_enviar_correo', {
+                    method: 'POST',
+                    body: formData
+                });
+        
+                // Verificar la respuesta
+                if (response.ok) {
+                    // Notificar al usuario
+                    alert('Correo enviado con éxito.');
+                } else {
+                    throw new Error('Hubo un problema al enviar el correo.');
+                }
+            } catch (error) {
+                console.error('Error al enviar el correo:', error);
+                alert('Hubo un problema al enviar el correo. Por favor, inténtelo de nuevo.');
+            }
+        }
+        
+        </script>
+        
+        
+        
+        
+
+</body>
+</html>

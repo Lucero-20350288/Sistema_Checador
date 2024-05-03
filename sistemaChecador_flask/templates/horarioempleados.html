@@ -1,0 +1,80 @@
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Horarios ALIOth-ALbeRTO</title>
+        <link rel="stylesheet" id="menuStyle" href="{{ url_for('static', filename='css/horarios.css') }}">
+    </head>
+    <body class="rectangle">
+        
+        <div class="inner-rectangle">
+            <p class="inner-text">Reporte Checador</p>
+        </div>
+        
+
+        <div class="busqueda">
+            
+            <button class="btn-pequeño" id="boton-volver"><a href="{{ url_for("framehorario") }}">Volver</a></button> 
+            <input type="search" id="input-busqueda" placeholder="Ingrese RFC o Nombre">
+           
+        <button class="btn-buscar"><img src="{{ url_for('static', filename='iconos/busqueda-boton.svg') }}" style="height: auto; width: 30px;display:none;" alt=""></button>
+        </div>
+        <div class="Tabla">
+            <table class="Table">
+                <tr>
+                    <th>EMPLEADO</th>
+                    <th>RFC</th>
+                    <th>PUESTO</th>
+                    <th>FECHA INICIO</th>
+                    <th>STATUS</th>
+                </tr>
+                {% for empleado in empleados %}
+                <tr>
+                    <td><a href="{{ url_for('horariotabla', rfc=empleado.RFC) }}">{{ empleado.nombre }} {{ empleado.apellido_paterno }} {{ empleado.apellido_materno }}</a></td>
+                    <td>{{ empleado.RFC }}</td>
+                    <td>{{ empleado.Puesto }}</td>
+                    <td>{{ empleado.Fecha_Contratación }}</td>
+                    {% if empleado.estatus|lower == "activo" %}
+                    <td style="color: green;">ACTIVO</td>
+                    {% else %}
+                    <td style="color: red;">INACTIVO</td>
+                    {% endif %}
+                </tr>
+                {% endfor %}
+                
+            </table>
+        </div>
+
+        <script>
+            // Función para filtrar los empleados por RFC o nombre
+            function filtrarEmpleados() {
+                // Obtener el valor del campo de búsqueda
+                var input = document.getElementById("input-busqueda");
+                var filtro = input.value.trim().toUpperCase(); // Eliminar espacios en blanco al inicio y al final del texto y convertir a mayúsculas
+
+                // Obtener todas las filas de la tabla
+                var filas = document.querySelectorAll(".Tabla table tr");
+
+                // Iterar sobre las filas y mostrar u ocultar según el filtro
+                filas.forEach(function(fila) {
+                    var columnaRFC = fila.getElementsByTagName("td")[1];
+                    var columnaNombre = fila.getElementsByTagName("td")[0];
+                    if (columnaRFC && columnaNombre) {
+                        var textoRFC = columnaRFC.textContent || columnaRFC.innerText;
+                        var textoNombre = columnaNombre.textContent || columnaNombre.innerText;
+                        if (textoRFC.toUpperCase().indexOf(filtro) > -1 || textoNombre.toUpperCase().indexOf(filtro) > -1) {
+                            fila.style.display = "";
+                        } else {
+                            fila.style.display = "none";
+                        }
+                    }
+                });
+            }
+
+            // Agregar un evento de entrada al campo de búsqueda para que se filtre automáticamente
+            document.getElementById("input-busqueda").addEventListener("input", filtrarEmpleados);
+        </script>
+
+    </body>
+    </html>

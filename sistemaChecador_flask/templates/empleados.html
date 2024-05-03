@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Empleados</title>
+  <link rel="stylesheet" href="../static/css/style-empleados.css">
+  <link rel="stylesheet" href="../static/css/jquery-ui.min.css">
+
+</head>
+<body>
+  <div class="ventana">
+    <div class="header">
+      <button class="btn-cerrar" onclick="cerrarVentana()">X</button>
+    </div>
+    <div class="content-botones">
+      <button type="submit" form="formAgregar" formaction="/editEmpleados" class="btn-menu"> <img src="{{ url_for('static', filename='iconos/icon_modificar.png') }}" alt="modificar"> <span>Modificar</span></button> 
+      <button type="submit" form="formAgregar" formaction="/deleteEmpleados" class="btn-menu"> <img src="{{ url_for('static', filename='iconos/icon_eliminar.png') }}" alt="eliminar"> <span>Eliminar</span></button> 
+      <button class="btn-menu" id="btn-cancelar"> <img src="{{ url_for('static', filename='iconos/icon_cancelar.png') }}" alt="cancelar"> <span>Cancelar</span></button> 
+    </div>
+    <div class="content-buscador">
+      <form id="formBuscar" action="/searchEmpleados" method="post">
+        <select name="busqueda" id="busqueda">
+          <option value="rfc" id="rfc">RFC</option>
+          <option value="nombre" id="nombre" selected>Nombre</option>
+        </select>
+        <input type="text" id="buscador" name="buscador" placeholder="Inserte RFC o Nombre para buscar un empleado">
+        <button type="submit"><img src="{{ url_for('static', filename='iconos/icon_buscar.png') }}" alt="buscar"></button> 
+      </form>
+    </div>
+    <div class="content-btn-pestanas">
+      <button class="" id="btn-datos-gen">Datos Generales</button>
+      <button class="" id="btn-datos-con">Datos de Contratacion</button>
+      <button class="" id="btn-datos-bio">Datos Biometricos</button>
+    </div>
+    <div class="content-datosGenerales">
+      
+      {% if busqueda %}
+        {%for empleado in busqueda[0]%}
+        <form id="formAgregar" action="" method="POST">
+          <div class="content-form-gen" id="datos-gen-llenado-1">
+            <div class="content-input">
+              <label>RFC</label>
+              <input type="text" class="form-control" value={{empleado.RFC}} name="rfc">
+            </div>
+            <div class="content-input">
+              <label>Tipo de horario</label>
+              <input type="text" class="form-control" value={{empleado.tipo_de_horario}} name="tipo_horario">
+            </div>
+            <div class="content-input">
+              <label>Nombre</label>
+            <input type="text" class="form-control" value="{{empleado.nombre}}" name="nombre">
+            </div>
+            <div class="content-input">
+              <label>Apellido Paterno</label>
+              <input type="text" class="form-control" value={{empleado.apellido_paterno}} name="apellido_p">
+            </div>
+            <div class="content-input">
+              <label>Apellido Materno</label>
+              <input type="text" class="form-control" value={{empleado.apellido_materno}} name="apellido_m">
+            </div>
+            <div class="content-input">
+              <label>Fecha de nacimiento</label>
+              <input type="text" class="form-control" value={{empleado.fecha_de_nacimiento}} name="fecha_de_nac">
+            </div>
+            <div class="content-input">
+              <label>Edad</label>
+              <input type="text" class="form-control" value={{empleado.edad}} name="edad">
+            </div>
+            <div class="content-input">
+              <label>Sexo</label>
+              <input type="text" class="form-control" value={{empleado.sexo}} name="sexo">
+            </div>
+            <div class="content-input">
+              <label>Estado civil</label>
+              <input type="text" class="form-control" value={{empleado.estado_civil}} name="edo_civil">
+            </div>
+          </div>
+
+          <div class="content-form-gen" id="datos-gen-llenado-2">
+            <div class="content-input">
+              <label>CURP</label>
+              <input type="text" class="form-control" value={{empleado.CURP}} name="curp">
+            </div>
+            <div class="content-input">
+              <label>Telefono</label>
+              <input type="text" class="form-control" value={{empleado.telefono}} name="telefono">
+            </div>
+            <div class="content-input">
+              <label>Calle</label>
+              <input type="text" class="form-control" value="{{empleado.calle}}" name="calle">
+            </div>
+            <div class="content-input">
+              <label>Colonia</label>
+              <input type="text" class="form-control" value="{{empleado.colonia}}" name="colonia">
+            </div>
+            <div class="content-input">
+              <label>Ciudad</label>
+              <input type="text" class="form-control" value="{{empleado.ciudad}}" name="ciudad">
+            </div>
+            <div class="content-input">
+              <label>Estado</label>
+              <input type="text" class="form-control" value={{empleado.estado}} name="estado">
+            </div>
+            <div class="content-input">
+              <label>Codigo Postal</label>
+              <input type="text" class="form-control" value={{empleado.codigo_postal}} name="cod_pos">
+            </div>
+            <div class="content-input">
+              <label>No. Credencial</label>
+              <input type="text" class="form-control" value={{empleado.numero_de_credencial}} name="num_creden">
+            </div>
+            <div class="content-input">
+              <label>Estatus</label>
+              <input type="text" class="form-control" value={{empleado.estatus}} name="estatus">
+            </div>
+            
+          </div>
+        {% endfor %}
+        {%for empleado in busqueda[1]%}
+          <div class="content-form-con" id="datos-con-llenado-1">
+            <div class="content-input">
+              <label>Departamento</label>
+              <select name="departamentos" id="">
+                <option value={{empleado.departamento_o_area}} selected>{{empleado.departamento_o_area}}</option>
+                <option value="2">Departamento 2</option>
+                <option value="3">Departamento 3</option>
+                <option value="4">Departamento 4</option>
+                <option value="5">Departamento 5</option>
+              </select>
+            </div>
+            <div class="content-input">
+              <label>Puesto</label>
+              <select name="puestos" id="">
+                <option value={{empleado.puesto}} selected>{{empleado.puesto}}</option>
+                <option value="2">Puesto 2</option>
+                <option value="3">Puesto 3</option>
+                <option value="4">Puesto 4</option>
+                <option value="5">Puesto 5</option>
+              </select>
+            </div>
+            <div class="content-input">
+              <label>ID Horario</label>
+              <input type="text" class="form-control" name="id_horario">
+            </div>
+            <div class="content-input">
+              <label>Fecha de contratacion</label>
+              <input type="date" class="form-control"  value={{empleado.fecha_de_ingreso}} ="fecha_contratacion">
+            </div>
+            <div class="content-input">
+              <label>No. Seguro Social</label>
+              <input type="text" class="form-control" value={{empleado.seguro_social}} name="no_ss">
+            </div>
+            
+          </div>
+        {% endfor %}
+          <div class="content-form-con" id="datos-con-llenado-2">
+            <div class="content-img">
+              <img src="/static/db/imagenes/{{busqueda[2]}}" alt="">
+            </div>
+          </div>
+  
+          <div class="content-form-bio" id="datos-bio-llenado">
+            <div class="content-img">
+              <img src="/static/db/imagenes/{{busqueda[2]}}" alt="foto del empleado">
+              <h3>Fotografía</h3>
+            </div>
+            <div class="content-img">
+              <img src="/static/iconos/huella.avif" alt="huella digital del empleado">
+              <h3>Huella Digital</h3>
+            </div>
+            
+          </div>
+        </form>
+        
+      {% else %}
+        <form id="formAgregar" action="" method="POST">
+        <div class="content-form-gen" id="datos-gen-1">
+          <div class="content-input">
+            <label>RFC</label>
+            <input type="text" class="form-control" name="rfc">
+          </div>
+          <div class="content-input">
+            <label>Tipo de horario</label>
+            <input type="text" class="form-control" name="tipo_horario">
+          </div>
+          <div class="content-input">
+            <label>Nombre</label>
+          <input type="text" class="form-control" name="nombre">
+          </div>
+          <div class="content-input">
+            <label>Apellido Paterno</label>
+            <input type="text" class="form-control" name="apellido_p">
+          </div>
+          <div class="content-input">
+            <label>Apellido Materno</label>
+            <input type="text" class="form-control" name="apellido_m">
+          </div>
+          <div class="content-input">
+            <label>Fecha de nacimiento</label>
+            <input type="text" class="form-control" name="fecha_de_nac">
+          </div>
+          <div class="content-input">
+            <label>Edad</label>
+            <input type="text" class="form-control" name="edad">
+          </div>
+          <div class="content-input">
+            <label>Sexo</label>
+            <input type="text" class="form-control" name="sexo">
+          </div>
+          <div class="content-input">
+            <label>Estado civil</label>
+            <input type="text" class="form-control" name="edo_civil">
+          </div>
+        </div>
+
+        <div class="content-form-gen" id="datos-gen-2">
+          <div class="content-input">
+            <label>CURP</label>
+            <input type="text" class="form-control" name="curp">
+          </div>
+          <div class="content-input">
+            <label>Telefono</label>
+            <input type="text" class="form-control" name="telefono">
+          </div>
+          <div class="content-input">
+            <label>Calle</label>
+            <input type="text" class="form-control" name="calle">
+          </div>
+          <div class="content-input">
+            <label>Colonia</label>
+            <input type="text" class="form-control" name="colonia">
+          </div>
+          <div class="content-input">
+            <label>Ciudad</label>
+            <input type="text" class="form-control" name="ciudad">
+          </div>
+          <div class="content-input">
+            <label>Estado</label>
+            <input type="text" class="form-control" name="estado">
+          </div>
+          <div class="content-input">
+            <label>Codigo Postal</label>
+            <input type="text" class="form-control" name="cod_pos">
+          </div>
+          <div class="content-input">
+            <label>No. Credencial</label>
+            <input type="text" class="form-control" name="num_creden">
+          </div>
+          <div class="content-input">
+            <label>Estatus</label>
+            <input type="text" class="form-control" name="estatus">
+          </div>
+          
+        </div>
+
+        <div class="content-form-con" id="datos-con">
+          <div class="content-input">
+            <label>Departamento</label>
+            <select name="departamentos" id="">
+              {%for dep in list_departamentos%}
+                <option value="{{dep.nombre}}" {% if loop.first %} SELECTED{% endif %}>{{ dep.nombre }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="content-input">
+            <label>Puesto</label>
+            <select name="puestos" id="">
+              <option value="1">Puesto 1</option>
+              <option value="2">Puesto 2</option>
+              <option value="3">Puesto 3</option>
+              <option value="4">Puesto 4</option>
+              <option value="5">Puesto 5</option>
+            </select>
+          </div>
+          <div class="content-input">
+            <label>ID Horario</label>
+            <input type="text" class="form-control" name="id_horario">
+          </div>
+          <div class="content-input">
+            <label>Fecha de contratacion</label>
+            <input type="date" class="form-control" name="fecha_contratacion">
+          </div>
+          <div class="content-input">
+            <label>No. Seguro Social</label>
+            <input type="text" class="form-control" name="no_ss">
+          </div>
+          
+        </div>
+
+        <div class="content-form-con" id="datos-con-2">
+          <div class="img">
+            <img src="../static/iconos/persona.png" alt="">
+          </div>
+        </div>
+
+        <div class="content-form-bio" id="datos-bio">
+          <div class="content-img">
+            <img src="/static/iconos/persona.png" alt="foto del empleado">
+            <h3>Fotografía</h3>
+          </div>
+          <div class="content-img">
+            <img src="/static/iconos/huella.avif" alt="huella digital del empleado">
+            <h3>Huella Digital</h3>
+          </div>
+        </div>
+        </form>
+      {% endif %}
+    </div>
+      
+  </div>
+  
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.13.2/jquery-ui.min.js"></script>
+  <script>
+    //Funcion para cerrar el frame actual
+    function cerrarVentana() {
+    var frame = $(".ventana")
+    frame.hide()
+    }
+
+    $('#btn-cancelar').click(function(){
+      $('input').val('')
+    })
+
+    $('#btn-datos-gen').click(function(){
+      var datos_con = $('#datos-con')
+      var datos_con_2 = $('#datos-con-2')
+      var datos_bio = $('#datos-bio')
+      var datos_gen_1 = $('#datos-gen-1')
+      var datos_gen_2 = $('#datos-gen-2')
+      
+      var datos_con_llenado = $('#datos-con-llenado-1')
+      var datos_con_llenado_2 = $('#datos-con-llenado-2')
+      var datos_bio_llenado = $('#datos-bio-llenado')
+      var datos_gen_llenado_1 = $('#datos-gen-llenado-1')
+      var datos_gen_llenado_2 = $('#datos-gen-llenado-2')
+
+      datos_con.addClass('invisible')
+      datos_con_2.addClass('invisible')
+      datos_bio.addClass('invisible')
+      
+      datos_con_llenado.addClass('invisible')
+      datos_con_llenado_2.addClass('invisible')
+      datos_bio_llenado.addClass('invisible')
+
+      if (datos_gen_1.hasClass('invisible') && datos_gen_2.hasClass('invisible') || datos_gen_llenado_1.hasClass('invisible') && datos_gen_llenado_2.hasClass('invisible')){
+        datos_gen_1.removeClass('invisible')
+        datos_gen_2.removeClass('invisible')
+        datos_gen_llenado_1.removeClass('invisible')
+        datos_gen_llenado_2.removeClass('invisible')
+
+        datos_gen_1.addClass('visible')
+        datos_gen_2.addClass('visible')
+        datos_gen_llenado_1.addClass('visible')
+        datos_gen_llenado_2.addClass('visible')
+      } else {
+        return
+      }
+    })
+
+    $('#btn-datos-con').click(function(){
+      var datos_con = $('#datos-con')
+      var datos_con_2 = $('#datos-con-2')
+      var datos_bio = $('#datos-bio')
+      var datos_gen_1 = $('#datos-gen-1')
+      var datos_gen_2 = $('#datos-gen-2')
+      
+      var datos_con_llenado = $('#datos-con-llenado-1')
+      var datos_con_llenado_2 = $('#datos-con-llenado-2')
+      var datos_bio_llenado = $('#datos-bio-llenado')
+      var datos_gen_llenado_1 = $('#datos-gen-llenado-1')
+      var datos_gen_llenado_2 = $('#datos-gen-llenado-2')
+
+      datos_gen_1.addClass('invisible')
+      datos_gen_2.addClass('invisible')
+      datos_bio.addClass('invisible')
+
+      datos_gen_llenado_1.addClass('invisible')
+      datos_gen_llenado_2.addClass('invisible')
+      datos_bio_llenado.addClass('invisible')
+
+      if (datos_con.css('display') == 'none' || datos_con_llenado.css('display') == 'none' ){
+        datos_con.removeClass('invisible')
+        datos_con.addClass('visible')
+        datos_con_2.removeClass('invisible')
+        datos_con_2.addClass('visible')
+
+        datos_con_llenado.removeClass('invisible')
+        datos_con_llenado.addClass('visible')
+        datos_con_llenado_2.removeClass('invisible')
+        datos_con_llenado_2.addClass('visible')
+      } else {
+        return
+      }
+      
+    })
+
+    $('#btn-datos-bio').click(function(){
+      var datos_con = $('#datos-con')
+      var datos_con_2 = $('#datos-con-2')
+      var datos_bio = $('#datos-bio')
+      var datos_gen_1 = $('#datos-gen-1')
+      var datos_gen_2 = $('#datos-gen-2')
+      
+      var datos_con_llenado = $('#datos-con-llenado-1')
+      var datos_con_llenado_2 = $('#datos-con-llenado-2')
+      var datos_bio_llenado = $('#datos-bio-llenado')
+      var datos_gen_llenado_1 = $('#datos-gen-llenado-1')
+      var datos_gen_llenado_2 = $('#datos-gen-llenado-2')
+
+      datos_gen_1.addClass('invisible')
+      datos_gen_2.addClass('invisible')
+      datos_con.addClass('invisible')
+      datos_con_2.addClass('invisible')
+
+      datos_gen_llenado_1.addClass('invisible')
+      datos_gen_llenado_2.addClass('invisible')
+      datos_con_llenado.addClass('invisible')
+      datos_con_llenado_2.addClass('invisible')
+
+      if (datos_bio.css('display') == 'none' || datos_bio_llenado.css('display') == 'none' ){
+        datos_bio.removeClass('invisible')
+        datos_bio.addClass('visible')
+
+        datos_bio_llenado.removeClass('invisible')
+        datos_bio_llenado.addClass('visible')
+      } else {
+        return
+      }
+      
+    })
+
+
+    $('#buscador').autocomplete({
+      source:function(request,response){
+        aData = {}
+        $.ajax({
+          url: '/autocomplete',
+          type: 'GET',
+          dataType: 'json',
+          success: function(data){
+            console.log(data)
+            var option = $('#busqueda').val()
+            if (option == 'nombre'){
+              aData = $.map(data, function(value, key){
+              
+                var nombre_completo = value.nombre + ' ' + value.apellido_paterno + ' ' + value.apellido_materno
+                return {
+                  label: nombre_completo,
+                  id: value.RFC,
+                }
+              })
+              //console.log(aData)
+              var results = $.ui.autocomplete.filter(aData, request.term)
+              response(results)
+            } else {
+              aData = $.map(data, function(value, key){
+                var nombre_completo = value.nombre + ' ' + value.apellido_paterno + ' ' + value.apellido_materno
+                return {
+                  label: value.RFC,
+                  id: value.RFC,
+                }
+              })
+              //console.log(aData)
+              var results = $.ui.autocomplete.filter(aData, request.term)
+              response(results)
+            }
+          }
+        })
+      }
+      
+    })
+  </script>
+    
+</body>
+</html>

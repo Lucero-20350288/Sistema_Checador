@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="../static/css/autorizacion-justificaciones.css">
+<link rel="stylesheet" href="../static/css/jquery-ui.min.css">
+<title>Justificaciones</title>
+<script
+  src="https://code.jquery.com/jquery-3.7.1.min.js"
+  integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
+  crossorigin="anonymous">
+  </script>
+</head>
+<body>
+
+  <div class="ventana">
+    <div class="header">Autorizaciones y Justificaciones
+      <button class="btn-cerrar" onclick="cerrarVentana()">X</button>
+    </div>
+    <div class="content-botones">
+        <button id="btn-todos" class="btn-menu primero">
+            <img src="{{ url_for('static', filename='iconos/icon_empleados.png') }}" alt="todos">
+            <span>Todos</span>
+        </button>
+        <button onclick="agregarJustificacion()" class="btn-menu"><img id="menu2" class="iconmenu" src="{{ url_for('static', filename='iconos/icon_agregar.png') }}" alt="">Asignar</button>
+        <button onclick="eliminarJustificacion()" type="button" class="btn-menu"> <img src="{{ url_for('static', filename='iconos/icon_eliminar.png') }}" alt="eliminar"> <span>Eliminar</span></button> 
+        <button onclick="modificarJustificacion('ID_JUSTIFICACION')" type="submit" class="btn-menu"><img src="{{ url_for('static', filename='iconos/icon_modificar.png') }}" alt="modificar"> <span>Modificar</span></button>  
+        <button class="btn-menu" id="btn-cancelar"> <img src="{{ url_for('static', filename='iconos/icon_cancelar.png') }}" alt="cancelar"> <span>Cancelar</span></button>  
+    </div>
+
+    <div class="contenedor-buscar">
+      <!-- Formulario de búsqueda --> 
+      <form id="formBuscar" method="post">
+        <input type="text" id="buscador" name="buscador" placeholder="RFC o Nombre del empleado">
+
+        <input type="hidden" id="empleado_rfc" name="empleado_rfc">
+        <input type="hidden" id="empleado_nombre" name="empleado_nombre">
+        <input type="hidden" id="empleado_apellido_paterno" name="empleado_apellido_paterno">
+        <input type="hidden" id="empleado_apellido_materno" name="empleado_apellido_materno">
+        
+        <p class="input-text">Empleado:</p>
+        <button type="submit" class="btn-busc" >Buscar</button>
+
+        <button onclick="buscarDepartamento()" type="button" class="btn-area">Área perteneciente:</button>
+        <span id="departamento" class="texto-departamento"></span>
+      </form>
+    </div>
+
+    <div>
+      <br>
+      <label class="select" for="incidencia">Seleccionar incidencia:</label>
+      <select id="incidencia" name="incidencia" class="incidencias">
+        <!-- Opciones de incidencias se cargarán dinámicamente aquí -->
+      </select>
+      <br>
+    </div>
+
+    <select class="input-rangoF" name="rangoFechas" id="rangoFechas">
+        <option value="Rango Fechas" selected>Rango de fechas</option>
+        <option value="Fecha única">Fecha única</option>
+      </select>
+    <div class="calendario">
+      <label for="fecha_inicio" class="texto-calendario">De:</label>
+      <input type="date" id="fecha_inicio" name="fecha_inicio" class="input-calendario">
+    </div>
+
+    <div class="calendario2">
+      <label id="text-al" for="fecha_fin" class="texto-calendario">Al:</label>
+      <input type="date" id="fecha_fin" name="fecha_fin" class="input-calendario">
+    </div>     
+
+  <div class="tabla-container">
+    <table id="tablaJustificaciones" class="tabla">
+      <thead>
+        <tr>
+          <th>Incidencia</th>
+          <th>Fecha Inicial</th>
+          <th>Fecha Final</th>
+        </tr>
+      </thead>
+      <tbody id="tabla-body">
+      </tbody>
+    </table>
+  </div>
+  </div>
+  <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.13.2/jquery-ui.min.js"></script>
+
+  <script>
+    document.getElementById('btn-todos').addEventListener('click', function() {
+        window.location.href = '/justificacion-todos';
+    });
+    
+    $('#rangoFechas').on('change', function(){
+      var tipo = $(this).val()
+      $('#fecha_fin, #text-al').toggle()
+    });
+
+
+    $(document).ready(function() {
+    $('#tabla-body').on('mouseover', 'tr', function() {
+        $(this).find('td').addClass('hovered');
+    }).on('mouseout', 'tr', function() {
+        $(this).find('td').removeClass('hovered');
+    });
+});
+
+$(document).ready(function() {
+    $('#tabla-body').on('click', 'tr', function() {
+        // Remover la clase 'selected' de todas las celdas de la tabla
+        $('#tabla-body td').removeClass('selected');
+
+        // Agregar la clase 'selected' a todas las celdas de la fila clickeada
+        $(this).find('td').addClass('selected');
+    });
+});
+
+
+$(document).ready(function() {
+    var filaSeleccionada = null;
+
+    $('#tabla-body').on('click', 'tr', function() {
+        // Si ya hay una fila seleccionada, quitar la clase
+        if (filaSeleccionada) {
+            filaSeleccionada.removeClass('selected');
+        }
+
+        // Obtener la nueva fila seleccionada y agregar la clase
+        filaSeleccionada = $(this);
+        filaSeleccionada.addClass('selected');
+
+        // Obtener los textos de todas las celdas de la fila seleccionada
+        const textosCeldas = filaSeleccionada.find('td').map(function() {
+            return $(this).text();
+        }).get();
+
+        // Realizar alguna acción con los textos de las celdas seleccionadas
+        console.log('Textos de las celdas seleccionadas: ', textosCeldas);
+    });
+  });
+
+
+    //cargar incidencias al select
+    function cargarIncidencias() {
+    fetch('/obtener-incidencias')
+        .then(response => response.json())
+        .then(incidencias => {
+            const selectIncidencias = document.getElementById('incidencia');
+            incidencias.forEach(incidencia => {
+                const option = document.createElement('option');
+                option.value = incidencia.id; // Asigna el id como valor de la opción
+                option.textContent = incidencia.incidencia; // Asigna la descripción como texto de la opción
+                selectIncidencias.appendChild(option);
+            });
+        });
+    }
+
+    cargarIncidencias(); // Cargar las incidencias al cargar la página
+
+    function agregarJustificacion() {
+    const empleadoRFC = $('#empleado_rfc').val();
+    const empleadoNombre = $('#empleado_nombre').val();
+    const empleadoApellidoPaterno = $('#empleado_apellido_paterno').val();
+    const empleadoApellidoMaterno = $('#empleado_apellido_materno').val();
+    const incidenciaSeleccionada = document.getElementById('incidencia');
+    const tipoFecha = $('#rangoFechas').val();
+    const fechaInicial = $('#fecha_inicio').val();
+    const fechaFinal = tipoFecha === 'Rango Fechas' ? $('#fecha_fin').val() : fechaInicial; // Tomar el valor del segundo calendario si es un rango de fechas
+    const departamentoArea = $('#departamento').text();
+
+    // Verificar que los campos obligatorios no estén vacíos
+    if (!empleadoRFC || !empleadoNombre || !empleadoApellidoPaterno || !incidenciaSeleccionada.value || !fechaInicial || (tipoFecha === 'Rango Fechas' && !fechaFinal) || !departamentoArea) {
+        alert('Por favor completa todos los campos obligatorios');
+        return;
+    }
+
+    const incidenciaTexto = incidenciaSeleccionada.options[incidenciaSeleccionada.selectedIndex].text;
+
+    // Llamada a la API para agregar una nueva justificacion
+    $.ajax({
+        url: '/agregar-justificacion',
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify({
+            rfc: empleadoRFC,
+            nombre: empleadoNombre,
+            apellido_paterno: empleadoApellidoPaterno,
+            apellido_materno: empleadoApellidoMaterno,
+            incidencia: incidenciaTexto,
+            tipo_fecha: tipoFecha,
+            fecha_inicial: fechaInicial,
+            fecha_final: fechaFinal,
+            departamento_o_area: departamentoArea
+        }),
+        success: function(response) {
+            // Manejar la respuesta del servidor
+            alert('Justificación agregada correctamente');
+            // Actualizar la tabla con los nuevos datos
+            obtenerJustificaciones();
+        },
+        error: function(error) {
+            console.error('Error al agregar justificación:', error);
+        }
+    });
+}
+
+
+
+// Función para obtener las justificaciones del empleado seleccionado
+function obtenerJustificaciones() {
+    const rfc = $('#empleado_rfc').val(); // Obtener el RFC del campo oculto
+
+    // Verificar si se ha seleccionado un empleado
+    if (!rfc) {
+        alert('Por favor selecciona un empleado');
+        return;
+    }
+
+    console.log(rfc);
+
+    // Hacer la solicitud AJAX para obtener las justificaciones
+    $.ajax({
+        url: '/obtener-justificaciones-por-rfc',
+        type: 'GET',
+        data: {rfc: rfc}, // Pasar el RFC como parámetro de la URL
+        success: function(response) {
+            // Limpiar la tabla antes de agregar nuevos datos
+            $('#tabla-body').empty();
+
+            // Agregar las nuevas filas a la tabla con las justificaciones obtenidas
+            response.forEach(function(justificacion) {
+                const row = `<tr>
+                                <td>${justificacion.incidencia}</td>
+                                <td>${justificacion.fecha_inicial}</td>
+                                <td>${justificacion.fecha_final}</td>
+                            </tr>`;
+                $('#tabla-body').append(row);
+            });
+            console.log(response);
+        },
+        error: function(error) {
+            console.error('Error al obtener justificaciones:', error);
+        }
+    });
+}
+
+// Asignar la función a ejecutar al hacer clic en el botón de buscar
+$('#formBuscar').submit(function(event) {
+    event.preventDefault(); // Evitar que se recargue la página al enviar el formulario
+    obtenerJustificaciones(); // Llamar a la función para obtener las justificaciones
+});
+
+
+//delete
+function eliminarJustificacion() {
+    // Obtener la fila seleccionada
+    const filaSeleccionada = $('#tabla-body tr.selected');
+    if (filaSeleccionada.length === 0) {
+        alert('Por favor, seleccione una justificación para eliminar.');
+        return;
+    }
+
+    // Obtener los datos de la justificación de la fila seleccionada
+    const rfc = $('#empleado_rfc').val();
+    const incidencia = filaSeleccionada.find('td:eq(0)').text();
+    const fechaInicial = filaSeleccionada.find('td:eq(1)').text();
+
+    // Confirmar la eliminación
+    if (confirm('¿Está seguro de que desea eliminar esta justificación?')) {
+        // Hacer la solicitud DELETE al servidor Flask
+        $.ajax({
+            url: '/delete-justificacion',
+            type: 'DELETE',
+            contentType: 'application/json',
+            data: JSON.stringify({
+                rfc: rfc,
+                incidencia: incidencia,
+                fecha_inicial: fechaInicial
+            }),
+            success: function (data) {
+                alert('Justificación eliminada correctamente');
+                // Actualizar la tabla con los nuevos datos
+                obtenerJustificaciones();
+            },
+            error: function () {
+                alert('Error al eliminar la justificación');
+            }
+        });
+    }
+}
+
+
+//Update
+function modificarJustificacion() {
+    const filaSeleccionada = $('#tabla-body tr.selected');
+    if (filaSeleccionada.length === 0) {
+        alert('Por favor, seleccione una justificación para modificar.');
+        return;
+    }
+
+    // Activar la edición de las celdas
+    filaSeleccionada.find('td').attr('contenteditable', 'true');
+
+    // Escuchar el evento keydown para detectar la tecla Enter
+    filaSeleccionada.on('keydown', function(e) {
+        if (e.key === 'Enter') {
+            e.preventDefault();  // Prevenir el comportamiento por defecto del Enter
+
+            // Recoger los valores actuales de las celdas
+            const rfc = $('#empleado_rfc').val();
+            const incidencia = filaSeleccionada.find('td:nth-child(1)').text();
+            const fecha_inicial = filaSeleccionada.find('td:nth-child(2)').text();
+            const fecha_final = filaSeleccionada.find('td:nth-child(3)').text();
+
+            // Desactivar la edición
+            filaSeleccionada.find('td').attr('contenteditable', 'false');
+
+            // Hacer la solicitud PUT al servidor Flask para actualizar la justificación
+            $.ajax({
+                url: '/update-justificacion/' + rfc,  // Usar RFC para la ruta
+                type: 'PUT',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    incidencia: incidencia,
+                    fecha_inicial: fecha_inicial,
+                    fecha_final: fecha_final
+                }),
+                success: function (data) {
+                    alert('Justificación modificada correctamente');
+                },
+                error: function () {
+                    alert('Error al modificar la justificación');
+                    // Si hay un error, reactivar la edición
+                    filaSeleccionada.find('td').attr('contenteditable', 'true');
+                }
+            });
+        }
+    });
+}
+
+
+
+//Obtener el departamento al que pertenece el empleado
+function buscarDepartamento() {
+    const rfc = $('#empleado_rfc').val();
+
+    // Hacer la solicitud AJAX para obtener el departamento
+    $.ajax({
+        url: '/obtener-departamento',
+        type: 'GET',
+        data: {rfc: rfc},
+        success: function(response) {
+            // Mostrar el departamento en el span
+            $('#departamento').text(response.departamentoArea);
+        },
+        error: function(error) {
+            console.error('Error al obtener el departamento:', error);
+            alert('Seleccione un empleado para obtener su departamento');
+
+        }
+    });
+}
+
+
+
+    // buscador
+    $('#buscador').autocomplete({
+    source: function(request, response) {
+      $.ajax({
+          url: '/autocomplete-datos',
+          type: 'GET',
+          dataType: 'json',
+          success: function(data) {
+              var results = $.map(data, function(value, key) {
+                  var nombre_completo = value.RFC + ' ' + value.nombre + ' ' + value.apellido_paterno + ' ' + value.apellido_materno
+                  return {
+                      label: nombre_completo,
+                      id: value._id,
+                      rfc: value.RFC,
+                      nombre: value.nombre,
+                      apellido_paterno: value.apellido_paterno,
+                      apellido_materno: value.apellido_materno
+                      }
+                })
+                var results = $.ui.autocomplete.filter(results, request.term)
+                response(results)
+            }
+        })
+    },
+    select: function(event, ui) {
+      $('#empleado_rfc').val(ui.item.rfc);
+      $('#empleado_nombre').val(ui.item.nombre);
+      $('#empleado_apellido_paterno').val(ui.item.apellido_paterno);
+      $('#empleado_apellido_materno').val(ui.item.apellido_materno);
+      }
+  });
+
+    // Función para cancelar todas las operaciones
+    function cancelarOperacion() {
+          // Recargar la página
+          location.reload();
+        }
+
+      // Asignar la función a los botones "Cancelar"
+      $(document).on("click", "#btn-cancelar", cancelarOperacion);
+
+    function cerrarVentana() {
+          var frame = $(".ventana")
+          frame.hide()
+    }
+
+  </script>
+
+</body>
+</html>

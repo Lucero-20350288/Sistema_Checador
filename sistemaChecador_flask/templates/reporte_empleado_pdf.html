@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Reporte de Empleados</title>
+  <style>
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    th, td {
+      border: 1px solid #dddddd;
+      text-align: left;
+      padding: 8px;
+    }
+    th {
+      background-color: #f2f2f2;
+    }
+  </style>
+</head>
+<body>
+  <h2>Datos Generales</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>RFC</th>
+        <th>Nombre</th>
+        <th>Apellido Paterno</th>
+        <th>Apellido Materno</th>
+        <th>Fecha de Nacimiento</th>
+        <th>Edad</th>
+        <th>Sexo</th>
+        <th>CURP</th>
+        <th>Teléfono</th>
+        <th>Calle</th>
+        <th>Número de Casa</th>
+        <th>Colonia</th>
+        <th>Ciudad</th>
+        <th>Estado</th>
+        <th>Código Postal</th>
+        <th>Número de Credencial</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for empleado in datos_generales %}
+      <tr>
+        <td>{{ empleado.RFC }}</td>
+        <td>{{ empleado.nombre }}</td>
+        <td>{{ empleado.apellido_paterno }}</td>
+        <td>{{ empleado.apellido_materno }}</td>
+        <td>{{ empleado.fecha_de_nacimiento }}</td>
+        <td>{{ empleado.edad }}</td>
+        <td>{{ empleado.sexo }}</td>
+        <td>{{ empleado.CURP }}</td>
+        <td>{{ empleado.telefono }}</td>
+        <td>{{ empleado.calle }}</td>
+        <td>{{ empleado.numero_de_casa }}</td>
+        <td>{{ empleado.colonia }}</td>
+        <td>{{ empleado.ciudad }}</td>
+        <td>{{ empleado.estado }}</td>
+        <td>{{ empleado.codigo_postal }}</td>
+        <td>{{ empleado.numero_de_credencial }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  
+  <h2>Datos de Contratación</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>RFC</th>
+        <th>Puesto</th>
+        <th>Escolaridad</th>
+        <th>Fecha de Ingreso</th>
+        <th>Seguro Social</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for empleado in datos_contratacion %}
+      <tr>
+        <td>{{ empleado.RFC }}</td>
+        <td>{{ empleado.puesto }}</td>
+        <td>{{ empleado.escolaridad }}</td>
+        <td>{{ empleado.fecha_de_ingreso }}</td>
+        <td>{{ empleado.seguro_social }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</body>
+</html>

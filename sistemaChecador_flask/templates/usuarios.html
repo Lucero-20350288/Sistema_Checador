@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style-usuarios.css') }}">
+    <title>Modificar Datos de Empresa</title>
+</head>
+<body>
+
+<div class="ventana">
+    <div class="header">Usuarios
+        <button class="btn-cerrar" onclick="cerrarVentana()">X</button>
+    </div>
+    <div class="content-botones">
+        <button type="button" form="formAgregar" class="btn-menu" onclick="agregarFila()">
+            <img src="{{ url_for('static', filename='iconos/icon_agregar.png') }}" alt="agregar">
+            <span>Agregar</span>
+        </button>
+        <button type="submit" class="btn-menu"> <img src="{{ url_for('static', filename='iconos/icon_modificar.png') }}" alt="modificar"> <span>Modificar</span></button> 
+        <button type="button"  formaction="{{url_for('delete', empleado_rfc=empleado_rfc)}}" class="btn-menu"> <img src="{{ url_for('static', filename='iconos/icon_eliminar.png') }}" alt="eliminar"> <span>Eliminar</span></button> 
+        <button class="btn-menu"> <img src="{{ url_for('static', filename='iconos/icon_cancelar.png') }}" alt="cancelar"> <span>Cancelar</span></button> 
+      </div>
+    <div class="form-container">
+        <form id="datos-empresa" method="post">
+            
+            <div class="form-group">
+                <label for="nombre">Nombre (s)</label>
+                <input type="text" id="nombre" name="nombre">
+            </div>
+            
+            <div class="form-group">
+                <label for="rfc">Apellido Paterno</label>
+                <input type="text" id="rfc" name="rfc">
+            </div>
+            
+            <div class="form-group">
+                <label for="calle_numero">Apellido Materno</label>
+                <input type="text" id="calle_numero" name="calle_numero">
+            </div>
+            
+            <div class="form-group">
+                <label for="usuario">Usuario</label>
+                <input type="text" id="usuario" name="usuario">
+            </div>
+            
+            <div class="form-group">
+                <label for="ciudad">Contraseña</label>
+                <input type="text" id="ciudad" name="ciudad">
+            </div>
+            
+            <div class="form-group">
+                <label for="entidad_federativa">Red</label>
+                <input type="text" id="entidad_federativa" name="entidad_federativa">
+            </div>
+            
+            <div class="form-group">
+                <label for="institucion">Institución</label>
+                <input type="text" id="institucion" name="institucion">
+            </div>
+            
+        </form>
+        </div>
+
+        <div class="tabla-container">
+            <table id="tablaDatos">
+                <thead>
+                    <tr>
+                        <th>Usuario</th>
+                        <th>Institución</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+        </div>
+    
+
+
+<script>
+function cerrarVentana() {
+    var ventana = document.querySelector('.ventana');
+    ventana.style.display = 'none';
+}
+</script>
+
+<script>
+    function agregarFila() {
+        // Obtener los valores de los campos de entrada
+        var valorUsuario = document.getElementById("usuario").value;
+        var valorInstitucion = document.getElementById("institucion").value;
+    
+        // Obtener la tabla y añadir una nueva fila al final
+        var tabla = document.getElementById("tablaDatos").getElementsByTagName('tbody')[0];
+        var nuevaFila = tabla.insertRow(tabla.rows.length);
+    
+        // Insertar nuevas celdas en la fila
+        var celdaUsuario = nuevaFila.insertCell(0);
+        var celdaInstitucion = nuevaFila.insertCell(1);
+    
+        // Establecer el contenido de las celdas con los valores introducidos
+        celdaUsuario.innerHTML = valorUsuario;
+        celdaInstitucion.innerHTML = valorInstitucion;
+    }
+    </script>
+    
+</body>
+</html>

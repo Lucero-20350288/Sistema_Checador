@@ -1,0 +1,373 @@
+/* Reset CSS para eliminar márgenes y paddings por defecto */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  max-width: 1280px;
+  max-height: 720px;
+  margin: 0 auto;
+  overflow: auto;
+  font-family: 'Roboto', sans-serif;
+}
+/* Estilos del Header*/
+.header {
+  position: fixed;
+  width: 1038px;
+  height: 80px;
+  max-width: 1280px;
+  z-index: 11;
+  margin-left: 242px;
+  background-color: white;
+  display: flex; /* Alineación en fila */
+  /* Espacio entre los elementos */
+  align-items: center; /* Centrado vertical */
+  border: 0px solid white; /* Cambia los bordes a 0px y color blanco */
+  border-bottom: 3px solid green;
+}
+
+.btn-header{  
+  width: 160px;
+  height:60px;
+  border:none;
+  border-radius:12px;
+	margin: 10px 13px 11px 10px;
+	color: white;
+	font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.3s;
+}
+
+/* Estilos del menú lateral */
+.sidebar {
+  background-color: white;
+  width: 242px;
+  height: 720px;
+  position: fixed;
+	display:flex;
+	flex-direction: column;
+	flex-wrap: nowrap;
+  z-index: 10;
+  border-right: 3px solid green; 
+}
+
+.div-sidebar{
+  display: flex;
+  justify-content: end;
+  align-items: center;
+  width:239px;
+  height:42px;
+  background-color:white;
+  border-top: 3px solid #f2f2f2;
+  cursor: pointer;
+}
+  
+ .btn-menu {
+  background-color: white;
+  width: 239px;
+  height: 58px;
+  padding: 10px 20px;
+  font-size: 21px;
+  transition: background-color 0.3s, transform 0.3s;
+  text-align: start; /* Alinea el contenido en el centro horizontalmente */
+  border: 0px solid white; /* Borde */
+  border-radius: 10px;
+  line-height: 38px; /* Centra verticalmente */
+  cursor: pointer;
+}
+
+.btn-salir {
+  display: block;
+  width: 200px;
+  height: 47px;
+  margin: 6px auto;
+  padding: 10px 20px;
+  background-color: #e22929;
+  color: #fff;
+  font-size: 21px;
+  transition: background-color 0.3s, transform 0.3s;
+  text-align: center; /* Alinea el contenido en el centro horizontalmente */
+  border: none;
+  border-radius: 12px;
+  line-height: 22px; /* Centra verticalmente */
+  cursor: pointer;
+}
+
+.btn-salir:hover {
+  background-color: #ca2626;
+}
+
+.btn-menu:hover {
+  background-color: #D9D9D9;
+  border-radius: 10px;
+}
+
+.btn-menu:active {
+  background-color: green;
+}
+  
+.btn-sidebar {
+  float: right;
+  background-color: transparent; /* Hace el botón transparente */
+  border: none; /* Elimina cualquier borde */
+}
+
+.top-section {
+  background-color: white;
+  height: 155px;
+  display: flex;
+  border: 0px solid white; /* Cambia los bordes a 0px y color blanco */
+  border-bottom: 3px solid green;
+}
+
+.left-side, .right-side {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.left-side::after, .right-side::before {
+  content: '';
+  position: absolute;
+  height: 100%;
+  width: 1.5px;
+  background-color: green;
+}
+
+.left-side::after {
+  right: 0;
+}
+
+.right-side::before {
+  left: 0;
+}
+
+.logo1 {
+  width: 58px; 
+  height: 58px; 
+  margin-top: 37px;
+}
+.logo2 {
+  width: 58px; 
+  height: 58px; 
+  margin-top: 6px;
+}
+
+.brand-text, .ittux-text {
+  text-align: center;
+  width: 100%;
+  margin-bottom:27px;
+}
+
+.brand-text {
+  font-size: 30px;
+  letter-spacing: 4%;
+  margin-top: 37px;
+  margin-bottom: 37px;
+  color: #1B396A; 
+}
+
+.iconmenu {
+  width: 32px;
+  height: 32px;
+	margin-right:20px;
+	vertical-align: middle; /* Alinea verticalmente la imagen */
+}
+
+.ittux-text {
+  font-size: 20px;
+  color: #079146;
+  }
+
+.content {
+  left: 242px;
+  transition: left 0.5s;
+}
+
+#info{
+  width: 64px;
+  height: 64px;
+  margin-right:10px;
+  align-self: center;
+  cursor: pointer;
+}
+
+#perfil{
+  margin-right:4px;
+  width: 64px;
+  height: 64px;
+  cursor: pointer;
+}
+
+/* Estilos para el contenedor de info y perfil */
+#infoPerfilContainer {
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+}
+
+#info, #perfil {
+  margin-left: 10px; /* Añade un margen entre los elementos */
+}
+
+  /* Estilos para colores de botones del Header */
+#b1 {
+  background-color: #079146; /* Cambio de color para el botón con ID "b1" */
+}
+
+#b1:hover{
+  background-color: #049e49; 
+}
+
+#b2{
+  background-color: #1B396A; /* Color predeterminado */
+}
+
+#b2:hover{
+  background-color: #1f4583; 
+}
+
+.content {
+  width: 1038px;
+  height: 640px;
+  margin-top: 80px;
+	margin-left: 242px;
+}
+
+.btn-header{  
+  width: 160px;
+  height:60px;
+  border:none;
+  border-radius:12px;
+	margin: 10px 13px 11px 10px;
+	color: white;
+	font-size: 16px;
+  text-align: center;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.3s;
+  box-shadow: 5px 5px #f2f2f2;
+}
+
+#b1i, #b2i{
+	width:22px;
+	height:22px;
+  margin-right: 5px;
+}
+
+#menu1{	
+	width:30px;
+	height:auto;
+}
+	
+#menudisplay {
+  width: 26px;
+  height: auto;
+  background-color: transparent;
+  border: none; /* Elimina cualquier borde */
+  padding: 0; /* Elimina cualquier relleno */
+  cursor: pointer; /* Cambia el cursor para indicar que es clickable */
+}
+
+.frameprincipal {
+  display: block;
+  width: 970px;
+  height: 560px;
+  margin: 0 auto;
+	border:none;
+}
+
+.footer {
+  width: 915px;
+  height: 50px;
+  margin: 10px auto;
+  border-radius: 30px 30px 0 0;
+  border-left: 4px solid green;
+  border-top: 4px solid green;
+  border-right: 4px solid green;
+  border-bottom: 4px solid green;
+  display: flex;
+  align-items: center;
+}
+
+.content-footer {
+  width: 90%;
+  height: 90%;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.parrafo-fecha, .parrafo-hora {
+  font-size: 20px;
+  font-weight: bold;
+  margin: 0 10px;
+  white-space: nowrap; 
+}
+.fecha-footer {
+  display: flex;
+  align-items: center; /* Asegura que todos los elementos estén alineados verticalmente */
+  justify-content: flex-end; /* Alinea los elementos al final del contenedor */
+}
+
+
+ /*     SUBMENU ESTILO DEFAULT USAR PARA TODOS LOS SUBMENÚS, 
+        SI TIENEN MUCHAS LETRAS O ALGO HACE QUE CON ESTOS ESTILOS NO SE VEA BIEN, HAGAN UN ESTILO APARTE O MODIFICARAN TODO ALV.*/
+.submenu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  display: none;
+  background-color: #f23535;
+  /*border: 1px solid #ccc;*/
+  border-top: none;
+  border: none;
+  
+  margin-left: 7px;
+}
+
+.submenu-option {
+  display: block;
+  width: 269px;
+  height: 43px;
+  
+  border: none ;
+  background-color: #EFEFEF;
+  /*border-bottom: 1px solid #ccc;*/
+  text-align: center;
+}
+
+.submenu-option:hover {
+  background-color: #00ffbb;
+  cursor: pointer;
+}
+
+.submenu.show {
+  display: block;
+}
+#iframeContainer {
+  position: fixed; /* o absolute, dependiendo de tus necesidades */
+  top: 80px; /* Ajusta esto basado en la altura de tu encabezado */
+  right: 20px;
+  background-color: white;
+  border: 1px solid #ccc;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  z-index: 1050;
+}
+#iframeContainer {
+  position: fixed; /* o absolute, dependiendo de tus necesidades */
+  top: 60px; /* Ajusta esto basado en la altura de tu encabezado */
+  right: 10px;
+  z-index: 1000; /* Asegúrate de que está por encima de otros elementos */
+  background-color: white; /* O cualquier otro color de fondo necesario */
+  border: 1px solid #ccc; /* Estilo opcional para el borde */
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* Sombra opcional para mejor visibilidad */
+}

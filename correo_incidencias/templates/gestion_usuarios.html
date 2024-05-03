@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Gestión de Usuarios</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/horarios.css') }}">
+    <style>
+
+
+        ::-webkit-scrollbar {
+            width: 12px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background-color: #008cba; /* Cambia el color del scroll */
+            border-radius: 6px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background-color: #027496; /* Cambia el color del scroll al pasar el cursor */
+        }
+
+        /* Tu estilo CSS existente */
+        .column {
+            flex: 0 0 30%;
+            margin: 10px;
+        }
+
+
+        .form-group {
+            margin-bottom: 15px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            margin-bottom: 5px;
+        }
+
+        input[type="text"],
+        input[type="password"],
+        .Table input[type="text"] {
+            width: 100%;
+            padding: 5px;
+            box-sizing: border-box;
+            border: 2px solid #0b7878;
+        }
+
+        .btn-agregar {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            text-align: center;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 10px;
+            width: 100%;
+        }
+
+        .btn-agregar:hover {
+            background-color: #45a049;
+        }
+
+        .alert {
+            padding: 15px;
+            margin-top: 20px;
+        }
+
+        .alert.error {
+            background-color: #f44336;
+            color: white;
+        }
+
+        .alert.success {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .table-container {
+            width: 100%;
+            max-height: 350px; /* Altura máxima de la tabla */
+            overflow-y: auto; /* Agrega scroll vertical */
+        }
+
+        .Table {
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .Table td {
+            padding: 5px;
+            cursor: pointer; /* Cambia el cursor al pasar sobre las celdas de la tabla */
+        }
+        .table-container::-webkit-scrollbar {
+            width: 12px;
+        }
+
+        .table-container::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        .table-container::-webkit-scrollbar-thumb {
+            background-color: #00796b; /* Cambia el color del scroll */
+            border-radius: 6px;
+        }
+        .btn-regresar {
+            background-color: #008CBA;
+            color: white;
+            padding: 10px 20px;
+            text-align: center;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 10px;
+            width: 100%;
+        }
+        .Table td.rfc-cell:hover {
+            background-color: #1b6a9c; /* Cambia el color de fondo al pasar el cursor */
+            transition: background-color 0.3s ease; /* Agrega una transición suave */
+        }
+
+        .Table td.contrasena-cell {
+            transition: background-color 0.3s ease; /* Transición suave al quitar el cursor */
+        }
+        .Table td.contrasena-cell:hover {
+            background-color: red; /* Cambia el color de fondo al pasar el cursor */
+            transition: background-color 0.3s ease; /* Agrega una transición suave */
+        }
+
+        .Table td.rfc-cell {
+            transition: background-color 0.3s ease; /* Transición suave al quitar el cursor */
+        }
+        .btn-regresar:hover {
+            background-color: #005f6b;
+        }
+    </style>
+</head>
+<body class="rectangle" data-header-image="{{ url_for('static', filename='img/machiote.png') }}" data-footer-image="{{ url_for('static', filename='img/piedepagina.png') }}">
+    <div class="inner-rectangle">
+        <p class="inner-text">Gestion de usuarios</p>
+    </div>
+
+    <div class="container">
+        <div class="column">
+
+            <!-- Formulario para agregar un nuevo usuario -->
+            <form method="post" action="/agregarusuario" class="form-group">
+                <label for="rfc">RFC:</label>
+                <input type="text" id="rfc" name="rfc" list="rfcList" required>
+                <datalist id="rfcList">
+                    {% for empleado in empleados %}
+                    <option value="{{ empleado.RFC }}">
+                    {% endfor %}
+                </datalist>
+                <label for="contrasena">Contraseña:</label>
+                <input type="password" id="contrasena" name="contrasena" required>
+                <button type="submit" class="btn-agregar">Agregar Usuario</button>
+            </form>
+        </div>
+        <div class="column">
+            <!-- Tabla para mostrar los RFC y contraseñas existentes en la colección 'login' -->
+            <h2>Empleados Registrados</h2>
+            <div class="table-container">
+                <table class="Table">
+                    <thead>
+                        <tr>
+                            <th>RFC</th>
+                            <th>Contraseña</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for usuario in usuarios %}
+                        <tr>
+                            <td class="rfc-cell">{{ usuario.rfc }}</td>
+                            <td class="contrasena-cell">{{ usuario.contrasena }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.querySelector('form');
+            const rfcInput = document.getElementById('rfc');
+            const rfcCells = document.querySelectorAll('.rfc-cell');
+            
+            rfcCells.forEach(cell => {
+                cell.addEventListener('click', function() {
+                    rfcInput.value = cell.textContent.trim();
+                });
+            });
+
+            form.addEventListener('submit', function(event) {
+                event.preventDefault();
+                const formData = new FormData(form);
+                fetch('/agregarusuario', {
+                    method: 'PUT',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        const alertBox = document.createElement('div');
+                        alertBox.className = 'alert error';
+                        alertBox.textContent = data.error;
+                        form.appendChild(alertBox);
+                    } else if (data.success) { // Si hay éxito
+                        const alertBox = document.createElement('div');
+                        alertBox.className = 'alert success'; // Agrega la clase 'success' para el estilo verde
+                        alertBox.textContent = data.success;
+                        form.appendChild(alertBox); // Agrega el mensaje de éxito al formulario
+                        // Aquí podrías redirigir o actualizar la tabla de usuarios
+                        window.location.href = '/usuarios'; // Redireccionar después del éxito
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+            });
+        });
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const rfcCells = document.querySelectorAll('.rfc-cell');
+            const passwordCells = document.querySelectorAll('td:nth-child(2)');  // Selecciona las celdas de contraseña
+        
+            passwordCells.forEach(cell => {
+                cell.addEventListener('click', function() {
+                    const rfc = cell.previousSibling.textContent;  // Obtiene el RFC del mismo row
+                    if (confirm(`¿Estás seguro de que quieres eliminar el usuario con RFC ${rfc.trim()}?`)) {
+                        fetch(`/eliminarusuario?rfc=${encodeURIComponent(rfc.trim())}`, {
+                            method: 'DELETE'
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            alert(data.message);
+                            location.reload();  // Recarga la página para reflejar los cambios
+                        })
+                        .catch(error => alert('Error al eliminar usuario: ' + error));
+                    }
+                });
+            });
+        });
+        </script>
+</body>
+</html>

@@ -1,0 +1,264 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  max-width: 970px;
+  max-height: 560px;
+  font-family: 'Roboto', sans-serif;
+}
+
+.ventana {
+  position: relative;
+  width: 970px;
+  height: 560px;
+  background-color: #F5F5F5;
+  border-radius: 5px;
+  border: 2px solid #000;
+  margin: 0 auto;
+}
+
+.header {
+  width: 966px;
+  height: 30px;
+  border-radius: 5px 5px 0 0;
+  background-color: #C0E3FD;
+}
+
+.header .btn-cerrar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 30px;
+  height: 30px;
+  border: none;
+  border-radius: 0 5px 0 0;
+  background-color: red;
+  color: #fff;
+  float: right;
+  cursor: pointer;
+}
+
+.content-botones {
+  margin-top: 15px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.btn-menu {
+  width: 85px;
+  height: 70px;
+  margin-left: 50px;
+  background-color: transparent;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  border: none;
+  cursor: pointer;
+}
+
+.btn-menu.primero {
+  margin-left: 0;
+}
+
+.content-buscador {
+  width: 594px;
+  height: 30px;
+  margin: 34px auto;
+  display: flex;
+  border-radius: 5px;
+}
+
+#formBuscar {
+  width: 594px;
+  height: 30px;
+  display: flex;
+}
+
+.content-buscador select {
+  position: relative;
+  width: 160px; /*Distancia real menos 2px de borde --APLICA PARA TODOS*/
+  height: 28px;
+  text-align: center;
+  font-size: 16px;
+  border-radius: 5px 0 0 5px;
+  border: 2px solid #000;
+}
+
+select option{
+  text-align: center;
+  font-size: 16px;
+  border-radius: 5px;
+  border: 1px solid #f2f2f2;
+}
+
+.content-buscador input {
+  width: 400px;
+  height: 28px;
+  border-top: 2px;
+  border-right: 1px;
+  border-bottom: 2px;
+  border-left: 1px;
+  border-color: #000;
+  border-style: solid;
+}
+.content-buscador button {
+  width: 30px;
+  height: 28px;
+  background: transparent;
+  border-radius: 0 5px 5px 0;
+  border: 2px solid #000;
+  cursor: pointer;
+}
+
+.content-buscador button img {
+  width: 24px;
+  height: 24px;
+}
+
+#ui-id-1 {
+  max-height: 100px;
+  overflow-y: scroll;
+  overflow-x: hidden;
+}
+
+.content-btn-pestanas button {
+  padding: 2px;
+  border: 2px solid #000;
+  border-radius: 4px 4px 0 0;
+}
+
+.content-datosGenerales {
+  width: 968px;
+  height: 324px;
+  max-height: 316px;
+  border-top: 1px solid #000;
+  overflow: hidden;
+}
+
+.content-datosGenerales form {
+  display: flex;
+  flex-flow: row;
+  justify-content: space-around;
+}
+
+.content-form-gen {
+  width: 385px;
+  height: 300px;
+  display: flex;
+  flex-direction: column;
+}
+
+
+.content-form-gen .content-input {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 15px;
+}
+
+.content-form-gen label {
+  font-size: 14px;
+}
+
+.content-form-gen input {
+  width: 200px;
+  height: 20px;
+  font-size: 14px;
+  border: 2px solid #000;
+  border-radius: 4px;
+}
+
+.content-form-con {
+  width: 385px;
+  height: 300px;
+  display: none;
+  flex-direction: column;
+}
+
+#datos-con {
+  justify-content: center;
+}
+
+#datos-con-llenado-1 {
+  justify-content: center;
+}
+
+#datos-con-2 {
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+
+#datos-con-llenado-2 {
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+
+.content-form-con .content-input {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 15px;
+}
+
+.content-form-con label {
+  font-size: 16px;
+}
+
+.content-form-con input {
+  width: 200px;
+  height: 20px;
+  font-size: 16px;
+  border: 2px solid #000;
+  border-radius: 4px;
+}
+
+.content-form-con select {
+  width: 200px;
+  height: 20px;
+  font-size: 16px;
+  border: 2px solid #000;
+  border-radius: 4px;
+}
+
+.content-form-con .content-img {
+  width: 220px;
+  height: 220px;
+}
+
+.content-form-con .content-img img {
+  width: 200px;
+  height: 200px;
+  border: 2px solid #000;
+}
+
+.content-form-bio {
+  width: 968px;
+  height: 300px;
+  display: none;
+  justify-content: space-evenly;
+  align-items: center;
+}
+
+.content-form-bio .content-img {
+  width: 220px;
+  height: 220px;
+}
+
+.content-form-bio .content-img img {
+  width: 200px;
+  height: 200px;
+  border: 2px solid #000;
+}
+
+.visible {
+  display: flex;
+}
+
+.invisible {
+  display: none;
+}

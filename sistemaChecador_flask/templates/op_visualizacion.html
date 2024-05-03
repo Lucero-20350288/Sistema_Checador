@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/op_visualizacion.css') }}">
+<title>Empleado</title>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+</head>
+<body>
+
+<div class="ventana">
+  <div class="header">Reporte Asistencia
+    <button class="btn-cerrar" onclick="cerrarVentana()">X</button>
+  </div>
+  <div class="contenedor-imagenes">
+
+    <a href="{{ url_for('descargar_excel') }}">
+      <img src="{{ url_for('static', filename='iconos/ico-excel.png') }}" alt="Descargar Excel">
+  </a>
+
+    <a href="{{ url_for('descargar_pdf') }}">
+      <img src="{{ url_for('static', filename='iconos/ico-pdf.png') }}" alt="Descargar PDF">
+  </a>
+
+  </div>
+
+
+<script>
+function cerrarVentana() {
+  var frame = $(".ventana")
+  frame.hide()
+}
+</script>
+
+</body>
+</html>

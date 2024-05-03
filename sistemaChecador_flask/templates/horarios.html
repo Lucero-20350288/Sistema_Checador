@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Horarios ALIOth-ALbeRTO</title>
+    <link rel="stylesheet" id="menuStyle"  href="{{ url_for('static', filename='css/horarios.css') }}">
+</head>
+<body class="rectangle">
+    
+    <div class="inner-rectangle">
+      <p class="inner-text">Reporte Checador</p>
+    </div>
+
+    <div class="busqueda">
+        <input type="search" id="input-busqueda" placeholder="Ingrese Nombre del reporte">
+       
+        <button class="btn-buscar"><img src="{{ url_for('static', filename='iconos/busqueda-boton.svg') }}" style="height: auto; width: 30px;" alt=""></button> 
+        <button class="btn-pequeño" id="boton-horario"><a href="{{ url_for('framehorarioEmpleados') }}">Horario</a></button>
+    </div>
+ 
+    <div class="Tabla">
+        <table class="Table">
+            <tr>
+                <th>NOMBRE (REPORTE)</th>
+                <th>FECHA REPORTE</th>
+                <th>STATUS</th>
+                <th>PUESTO</th>
+                <th>EMPLEADO</th>
+            </tr>
+            {% for reporte in reportes_horario %}
+                {% for horario in reporte.Horarios %}
+                    <tr>
+                        <td><a href="{{ url_for('ver_horario', nombre_reporte=horario.Nombre_horario_reporte) }}">{{ horario.Nombre_horario_reporte }}</a></td>
+
+                        <td>{{ horario.Fecha_reporte }}</td>
+                        <td style="color: {{ 'green' if reporte.estatus == 'Activo' else 'red' }}">{{ reporte.estatus }}</td>
+                        <td>{{ reporte.puesto }}</td>
+                        <td>
+                            <a style="background-color: #9ecdc9;; display: block; text-decoration: none; color: black;" href="#" onmouseover="this.style.backgroundColor='#dc3545';" onmouseout="this.style.backgroundColor='#80CBC4';" onclick="eliminarHorario('{{ horario.Nombre_horario_reporte }}'); return false;">
+                                {{ reporte.nombrecompleto }}
+                            </a>
+                        </td>
+                        
+                    </tr>
+                {% endfor %}
+            {% endfor %}
+        </table>
+    </div>
+    <script>
+        // Función para filtrar los reportes por nombre del reporte
+        function filtrarReportes() {
+            // Obtener el valor del campo de búsqueda
+            var input = document.getElementById("input-busqueda");
+            var filtro = input.value.trim().toUpperCase(); // Eliminar espacios en blanco al inicio y al final del texto y convertir a mayúsculas
+    
+            // Obtener todas las filas de la tabla
+            var filas = document.querySelectorAll(".Tabla table tr");
+    
+            // Iterar sobre las filas y mostrar u ocultar según el filtro
+            filas.forEach(function(fila) {
+                // Cambia el índice si el nombre del reporte no está en la primera columna
+                var columnaNombreReporte = fila.getElementsByTagName("td")[0];
+                if (columnaNombreReporte) {
+                    var textoNombreReporte = columnaNombreReporte.textContent || columnaNombreReporte.innerText;
+                    if (textoNombreReporte.toUpperCase().indexOf(filtro) > -1) {
+                        fila.style.display = "";
+                    } else {
+                        fila.style.display = "none";
+                    }
+                }
+            });
+        }
+
+        function eliminarHorario(nombreReporte) {
+            if (confirm('¿Estás seguro de que deseas eliminar este reporte?')) {
+                fetch('{{ url_for('eliminar_horario', nombre_reporte='') }}' + nombreReporte, {
+                    method: 'POST',
+                }).then(response => {
+                    return response.json();
+                }).then(data => {
+                    alert(data.mensaje);
+                    if(data.mensaje === 'Reporte eliminado exitosamente'){
+                        // Recargar la página o actualizar la vista para reflejar la eliminación.
+                        window.location.reload();
+                    }
+                }).catch(err => {
+                    alert('Hubo un error al eliminar el reporte.');
+                });
+            }
+        }
+    
+        // Agregar un evento de entrada al campo de búsqueda para que se filtre automáticamente
+        document.getElementById("input-busqueda").addEventListener("input", filtrarReportes);
+    </script>
+    
+</body>
+</html>

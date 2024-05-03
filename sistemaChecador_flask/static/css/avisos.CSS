@@ -1,0 +1,232 @@
+/* Estilos para el cuerpo del documento */
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  font-family: 'Roboto', sans-serif;
+  margin: 0; /* Elimina el margen predeterminado */
+}
+
+/* Estilos para la ventana principal */
+.ventana {
+  position: relative;
+  width: calc(100% - 30px); /* Ancho del 100% menos 30px de espacio para la derecha */
+  height: calc(100% - 30px); /* Altura del 100% menos 30px de espacio para la parte inferior */
+  background-color: #F5F5F5;
+  border-radius: 5px;
+  border: 3px solid #000;
+  box-sizing: border-box; /* Incluir el borde en el tamaño total */
+  overflow: auto;
+  margin: 30px auto; /* Espacio de 30px desde el borde del cuerpo del documento */
+}
+
+/* Estilos para el encabezado principal */
+.header {
+  width: 100%;
+  height: 30px;
+  border-radius: 5px;
+  border: 3px solid #000;
+  background-color: #C0E3FD;
+  box-sizing: border-box; /* Incluir el borde en el tamaño total */
+}
+
+/* Estilos para el botón de cerrar del encabezado principal */
+.header .btn-cerrar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 30px;
+  height: 30px;
+  border: none;
+  border-radius:  5px;
+  background-color: red;
+  color: #fff;
+  float: right;
+  cursor: pointer;
+  top: 2px;
+}
+
+/* Estilos para el nuevo encabezado */
+.message-header {
+  background-color: #F5F5F5;
+  border: 2px solid #000000;
+  border-radius: 5px;
+  margin-bottom: 10px; /* Espacio entre el nuevo encabezado y el contenedor de botones */
+  margin-left: 5px; /* Espacio a la izquierda */
+  margin-right: 5px; /* Espacio a la derecha */
+  margin-top: 110px;
+}
+
+/* Estilos adicionales para el contenedor de edición */
+.contenedor-editar {
+  width: 80%; /* Reducir el ancho en un 20% */
+  height: 60%; /* Reducir la altura en un 40% */
+  margin: 50px auto 0; /* Centrar horizontalmente y desplazar hacia arriba 50px */
+  overflow: hidden; /* Ocultar barras de desplazamiento */
+  border: 4px solid black; /* Borde de 4px sólido en color negro */
+  box-sizing: border-box; /* Incluir el borde en el tamaño total */
+}
+
+/* Estilos para el contenedor de entrada de texto */
+.input-contenedoraviso {
+  margin: 50px auto 0; /* Centrar horizontalmente y desplazar hacia arriba 50px */
+  margin-top: 35px;
+}
+
+.input-contenedorrfc {
+  margin: 50px auto 0; /* Centrar horizontalmente y desplazar hacia arriba 50px */
+  margin-top: 35px;
+}
+
+/* Estilos para el campo de entrada de texto */
+.input-rfc,
+.input-mensaje {
+  width: calc(100% - 10px); /* Ancho completo menos el ancho del scrollbar vertical */
+  padding: 12px; /* Espaciado interno */
+  margin: 8px 3px; /* Margen */
+  display: block; /* Mostrar como elemento de bloque */
+  border: 1px solid #ccc; /* Borde gris */
+  border-radius: 4px; /* Bordes redondeados */
+  box-sizing: border-box; /* Tamaño de la caja */
+}
+.input-mensaje {
+  resize: none; /* Evitar que se pueda ajustar el tamaño */
+}
+/* Estilos para el campo de entrada de texto en foco */
+.input-rfc:focus,
+.input-mensaje:focus {
+  border: 2px solid #4CAF50; /* Borde verde */
+}
+
+/* Estilos para el botón de enviar y el botón de guardar */
+.btn-enviar,
+.btn-guardar {
+  background-color: #e4f3ff; /* Color de fondo azul */
+  border: 3px solid #000;
+  color: rgb(0, 0, 0); /* Color del texto blanco */
+  padding: 0; /* Eliminar el padding para ajustar el texto correctamente */
+  text-decoration: none; /* Sin subrayado */
+  display: flex; /* Usar flexbox para alinear verticalmente */
+  justify-content: center; /* Centrar horizontalmente */
+  font-size: 16px; /* Tamaño de la fuente */
+  margin-left: 20px; /* Distancia de 20px del borde izquierdo para el botón de enviar */
+  margin-right: 20px; /* Distancia de 20px del borde derecho para el botón de guardar */
+  cursor: pointer; /* Cursor al pasar por encima */
+  border-radius: 10px; /* Bordes redondeados */
+  width: 200px; /* Ancho fijo para ambos botones */
+  height: 50px; /* Altura fija para ambos botones */
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+}
+.btn-guardar {
+  float: right; /* Alinea el botón a la derecha */
+  margin-left: 20px; /* Espacio de 20px entre el botón de enviar */
+  margin-top: 15px; /* Desplazamiento hacia abajo */
+  align-items: center;
+}
+.btn-enviar {
+  margin-left: 20px; /* Mover a la izquierda 20px del borde */
+  margin-top: 25px; /* Desplazamiento hacia abajo */
+  align-items: center;
+}
+.btn-enviar:hover,
+.btn-guardar:hover { 
+  transform: scale(1.10);
+  background-color: #9baff3;
+  transition: all 0.3s;
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+}
+
+/* Estilos para el contenedor de texto */
+.texto-container {
+  position: absolute; /* Posición absoluta para centrarlo */
+  width: 600px; /* Ancho del contenedor (el triple de 200px) */
+  height: 60px; /* Altura del contenedor (el triple de 20px) */
+  border: 2px solid black; /* Borde de 2px en color negro */
+  left: calc(50% - 300px); /* Centrar horizontalmente */
+  top: 60px; /* Desplazamiento desde arriba */
+  border-radius: 6px;
+  background-color: #e4f3ff;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Estilos para el texto dentro del contenedor */
+.texto {
+  text-align: center; /* Alinear el texto al centro */
+  margin: 0; /* Eliminar el margen predeterminado */
+  padding: 0; /* Eliminar el padding predeterminado */
+  line-height: 60px; /* Alinear verticalmente el texto */
+  font-size: 24px; /* Tamaño del texto adaptado al contenedor */
+}
+
+
+.input-container {
+  display: inline-block;
+  margin-top: 30px;
+  border: 2px solid black;
+  padding: 5px;
+  text-align: center;
+  margin-left: 30px; /* Separación de 30px hacia la derecha */
+  margin-bottom: 10px;
+  border-radius: 8px;
+  background-color: #fafdff;
+}
+
+.input-container p {
+  margin: 0;
+}
+
+.input-fecha {
+  margin: 0 auto;
+}
+
+/* Estilos para el contenedor de fecha de vencimiento */
+.input-containerven {
+  display: inline-block;
+  margin-top: 30px;
+  border: 2px solid black;
+  padding: 5px;
+  text-align: center;
+  margin-left: 30px; /* Separación de 30px hacia la derecha */
+  margin-bottom: 10px;
+  border-radius: 8px;
+  background-color: #fafdff;
+  position: relative; /* Posición relativa para alinear el botón dentro */
+}
+
+.input-containerven p {
+  margin: 0;
+}
+
+/* Estilos para el campo de fecha */
+.input-fecha {
+  margin: 0 auto;
+}
+
+/* Estilos para el botón "Historial" */
+.btn-historial {
+  background-color: #e4f3ff;
+  border: 2px solid #000;
+  color: rgb(0, 0, 0);
+  padding: 0;
+  text-decoration: none;
+  display: flex;
+  justify-content: center;
+  align-items: center; /* Para alinear verticalmente */
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 5px;
+  width: 100px;
+  height: 25px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  position: absolute; /* Posición absoluta para alinear con el borde derecho */
+  right: calc(30px - 5px); /* Separación de 30px desde el borde derecho, ajustado por el borde y el padding */
+  top: 370px; /* Alineación vertical al centro, ajustado por el borde y el padding */
+}
+
+/* Estilos para el botón "Historial" al pasar el cursor por encima */
+.btn-historial:hover {
+  transform: scale(1.10);
+  background-color: #9baff3;
+  transition: all 0.3s;
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+}

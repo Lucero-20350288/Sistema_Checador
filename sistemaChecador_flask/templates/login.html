@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Iniciar Sesión</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
+<script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+</head>
+<body>
+
+<div class="center-container"> <!-- Nuevo div contenedor para centrar -->
+  <div class="login-container">
+    <div class="left-panel">
+        <!-- Contenido del panel izquierdo (logo y mensaje de bienvenida) -->
+        <img src="{{ url_for('static', filename='iconos/logo_tec.png') }}" alt="Tecnológico Nacional de México" class="logo">
+        <div class="instituto-container">
+          <p class="instituto-nombre">TECNOLÓGICO NACIONAL DE MÉXICO</p>
+          <hr class="linea-divisora">
+          <p class="campus-nombre">CAMPUS TUXTEPEC</p>
+        </div>
+    </div>
+    <div class="right-panel">
+      <img src="{{ url_for('static', filename='iconos/log_ittux.png') }}" alt="Campus Tuxtepec" class="logo">
+        <!-- Contenido del panel derecho (formulario de inicio de sesión) -->
+        <h2>¡Bienvenido!</h2>
+        <!-- Mensaje de error -->
+        {% if error %}
+        <div class="error">{{ error }}</div>
+        {% endif %}
+        <form action="{{ url_for('login') }}" method="post">
+            <div class="form-input">
+                <input type="text" name="usuario" placeholder="Ingrese su Usuario" required>
+            </div>
+            <div class="form-input">
+                <input type="password" name="contraseña" placeholder="Ingrese su Contraseña" required>
+            </div>
+            <div class="form-input">
+                <button type="submit">INGRESAR</button>
+            </div>
+        </form>
+    </div>
+</div>
+</div>
+
+
+  
+
+</body>
+</html>

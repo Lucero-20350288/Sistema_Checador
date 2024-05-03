@@ -1,0 +1,1 @@
+2024-04-25 08:45:24,069 - __main__ - ERROR - Error al enviar el correo: (535, b'5.7.139 Authentication unsuccessful, the user credentials were incorrect. [SA1P222CA0107.NAMP222.PROD.OUTLOOK.COM 2024-04-25T14:45:24.003Z 08DC645CBD0FC9DC]')

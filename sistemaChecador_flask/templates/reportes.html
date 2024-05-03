@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tabla Simple</title>
+  <style>
+    table {
+      border-collapse: collapse;
+      margin-top: 150px; /* Centrar la tabla horizontalmente */
+      margin-right: -5px;
+    }
+    td {
+      border: 1px solid #ddd;
+      padding: 4px; /* Reducir el relleno para que las filas sean más pequeñas */
+      text-align: left;
+      width: 100px; /* Ancho fijo para las celdas para hacerlas más pequeñas */
+    }
+    tr:nth-child(even) {
+      background-color: #f9f9f9;
+    }
+  </style>
+</head>
+<body>
+  <table>
+    <tbody>
+      <tr id="fila-checador">
+        <td>Checador</td>
+      </tr>
+      <tr id="fila-asistencia">
+        <td>Asistencia</td>
+      </tr>
+      <tr id="fila-empleado">
+        <td>Empleado</td>
+      </tr>
+      <tr id="fila-horario">
+        <td>Horario</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <script>
+    // Asegúrate de que el DOM esté completamente cargado
+    document.addEventListener('DOMContentLoaded', function() {
+      // Obtiene la fila por el ID
+      var filaChecador = document.getElementById('fila-checador');
+      
+      // Añade un controlador de eventos de clic
+      filaChecador.addEventListener('click', function() {
+        // Cambia la ubicación a checador.html
+        window.location.href = '/frameChecador';
+      });
+    });
+  </script>
+
+  <script>
+    // Asegúrate de que el DOM esté completamente cargado
+    document.addEventListener('DOMContentLoaded', function() {
+      // Obtiene la fila por el ID
+      var filaEmpleado = document.getElementById('fila-empleado');
+      
+      // Añade un controlador de eventos de clic
+      filaEmpleado.addEventListener('click', function() {
+        // Cambia la ubicación a checador.html
+        window.location.href = '/frameReporteEmpleado';
+      });
+    });
+  </script>
+
+<script>
+  // Asegúrate de que el DOM esté completamente cargado
+  document.addEventListener('DOMContentLoaded', function() {
+    // Obtiene la fila por el ID
+    var filaAsistencia = document.getElementById('fila-asistencia');
+    
+    // Añade un controlador de eventos de clic
+    filaAsistencia.addEventListener('click', function() {
+      // Cambia la ubicación a checador.html
+      window.location.href = '/frameReporteAsistencia';
+    });
+  });
+</script>
+
+<script>
+  // Asegúrate de que el DOM esté completamente cargado
+  document.addEventListener('DOMContentLoaded', function() {
+    // Obtiene la fila por el ID
+    var filaHorario = document.getElementById('fila-horario');
+    
+    // Añade un controlador de eventos de clic
+    filaHorario.addEventListener('click', function() {
+      // Cambia la ubicación a checador.html
+      window.location.href = '/frameReporteHorario';
+    });
+  });
+</script>
+
+</body>
+</html>

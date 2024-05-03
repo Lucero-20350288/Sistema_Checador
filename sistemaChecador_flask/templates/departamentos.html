@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Departamentos</title>
+  <link rel="stylesheet" href="../static/css/style-departamento.css">
+</head>
+<body>
+  <div class="ventana">
+    <div class="header"></div>
+    <div class="content-botones">
+      <button type="submit" form="formAgregar" class="btn-menu primero"> <img src="{{ url_for('static', filename='iconos/icon_alldepartamento.png') }}" alt="todos"> <span>Todos</span></button> 
+      <button type="submit" form="formAgregar" class="btn-menu"> <img src="{{ url_for('static', filename='iconos/icon_agregar.png') }}" alt="agregar"> <span>Agregar</span></button> 
+      <button class="btn-menu"> <img src="{{ url_for('static', filename='iconos/icon_modificar.png') }}" alt="modificar"> <span>Modificar</span></button> 
+      <button class="btn-menu"> <img src="{{ url_for('static', filename='iconos/icon_eliminar.png') }}" alt="eliminar"> <span>Eliminar</span></button> 
+      <button class="btn-menu"> <img src="{{ url_for('static', filename='iconos/icon_cancelar.png') }}" alt="cancelar"> <span>Cancelar</span></button> 
+    </div>
+    <div class="content-buscador">
+      <span>Puesto</span>
+      <input type="text" placeholder="Inserte el nombre del Departamento">
+      <button type="submit"><img src="{{ url_for('static', filename='iconos/icon_buscar.png') }}" alt="buscar"></button> 
+    </div>
+    
+    
+    <div class="content-datosGenerales">
+        
+        <form id="formAgregar" action="/departamento" method="POST">
+          <div class="content-form">
+            <div class="content-input">
+              <label>Clave</label>
+              <input type="text" class="form-control"  name="clave">
+            </div>
+            <div class="content-input">
+              <label>Nombre del departamento</label>
+              <input type="text" class="form-control"  name="nombre">
+            </div>
+        
+            
+          </div>
+        </form>
+        
+      </div>
+      
+    </div>
+</body>
+</html>

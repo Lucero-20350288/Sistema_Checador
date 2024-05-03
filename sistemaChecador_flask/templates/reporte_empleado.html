@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/reporte-empleado.css') }}">
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<title>Empleado</title>
+<script
+  src="https://code.jquery.com/jquery-3.7.1.min.js"
+  integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
+  crossorigin="anonymous">
+  </script>
+</head>
+<body>
+
+  <div class="ventana">
+    <div class="header">Reporte Empleado
+      <button class="btn-cerrar" onclick="cerrarVentana()">X</button>
+    </div>
+    <div class="content-botones">
+      <button type="button" id="btnTodos" class="btn-menu primero">
+        <img src="{{ url_for('static', filename='iconos/icon_empleados.png') }}" alt="todos">
+        <span>Todos</span>
+      </button>
+      <button type="submit" class="btn-menu" id="btnVisualizar">
+        <img src="{{ url_for('static', filename='iconos/icon_visual.png') }}" alt="visualizar">
+        <span>Visualizar</span>
+      </button> 
+      <button class="btn-menu" id="btnCancelar">
+        <img src="{{ url_for('static', filename='iconos/icon_cancelar.png') }}" alt="cancelar">
+        <span>Cancelar</span>
+      </button>
+      
+    </div>
+
+    <div class="input-contenedor">
+      <select class="select-busqueda" onchange="cambiarBusqueda(this)">
+        <option value="empleado">Empleado</option>
+        <option value="rfc">RFC</option>
+      </select>
+      <form action="{{ url_for('frameReporteEmpleado') }}" method="post">
+        <input type="text" class="input-box input-empleado" name="nombre" placeholder="Ingresa nombre de empleado" id="inputEmpleado" style="display: none;">
+        <input type="text" class="input-box input-rfc" name="rfc" placeholder="Ingresa RFC de empleado" id="inputRFC">
+        <button type="submit" class="btn-buscar">
+            <img src="{{ url_for('static', filename='iconos/icon_buscar.png') }}" alt="imagen" class="input-image">
+        </button>
+      </form>
+    </div>
+    
+    <form action="{{ url_for('exportar_a_excelem') }}" method="post" id="formVisualizar">
+  <div class="tabla-container">
+    <table class="tabla">
+      <thead>
+        <tr>
+          <th>RFC</th>
+          <th>Nombre</th>
+          <th>Departamento/Area</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for empleado in resultados %}
+        <tr>
+          <td>{{ empleado.get('RFC', 'No disponible') }}</td>
+          <td>{{ empleado.get('nombre', 'No disponible') }} {{ empleado.get('apellido_paterno', '') }} {{ empleado.get('apellido_materno', '') }}</td>
+          <td>{{ empleado.get('departamento_o_area', 'No disponible') }}</td>
+        </tr>
+        {% else %}
+        <tr>
+            <td colspan="3">No se encontraron resultados</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+    
+    </table>
+  </div>
+
+
+</form>
+  </div>
+
+  <script>
+    function cambiarBusqueda(selectElement) {
+  var valor = selectElement.value;
+  var inputEmpleado = document.getElementById('inputEmpleado');
+  var inputRFC = document.getElementById('inputRFC');
+  if(valor === 'empleado') {
+    inputEmpleado.style.display = 'block';
+    inputRFC.style.display = 'none';
+  } else if(valor === 'rfc') {
+    inputEmpleado.style.display = 'none';
+    inputRFC.style.display = 'block';
+  }
+}
+
+
+  </script>
+  
+  <script>
+    document.getElementById('btnVisualizar').addEventListener('click', function(event) {
+        event.preventDefault(); // Prevenir el comportamiento predeterminado del formulario.
+    
+        // Recoger los datos visibles en la tabla.
+        var datosTabla = [];
+        document.querySelectorAll(".tabla tbody tr").forEach(function(fila) {
+            var celdas = fila.querySelectorAll("td");
+            if (celdas.length === 3) { // Asegúrate de que solo tomas filas con tres columnas.
+                var filaDatos = {
+                    RFC: celdas[0].innerText,
+                    NOMBRE: celdas[1].innerText,
+                    DEPARTAMENTO: celdas[2].innerText
+                };
+                datosTabla.push(filaDatos);
+            }
+        });
+    
+        // Envío de datos al servidor mediante POST.
+        fetch('/exportar-a-excelem', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({datos: datosTabla})  // Envía los datos como JSON.
+        })
+        .then(response => response.blob())
+        .then(blob => {
+            // Crear un enlace para descargar el archivo.
+            var url = window.URL.createObjectURL(blob);
+            var a = document.createElement('a');
+            a.href = url;
+            a.download = "Reporte_Datos_Generales.xlsx";
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+        })
+        .catch(error => console.error('Error al exportar a Excel:', error));
+    });
+    </script>
+    
+  
+
+  <script>
+    window.onload = function() {
+      var selectElement = document.querySelector('.select-busqueda');
+      cambiarBusqueda(selectElement);
+    }
+  </script>
+  
+
+  <script>
+    function cerrarVentana() {
+    var frame = $(".ventana")
+    frame.hide()
+    }
+  </script>
+
+<script>
+  $('#btnTodos').click(function() {
+    $.ajax({
+        url: '/todosLosEmpleados',
+        type: 'GET',
+        success: function(response) {
+            var tbodyEl = $('.tabla tbody');
+            tbodyEl.html(''); // Limpiar la tabla actual antes de agregar los nuevos resultados
+
+            response.forEach(function(empleado) {
+                tbodyEl.append(`
+                    <tr>
+                        <td>${empleado.RFC}</td>
+                        <td>${empleado.nombre_completo}</td>
+                        <td>${empleado.departamento_o_area}</td>
+                    </tr>
+                `);
+            });
+        }
+    });
+});
+
+  </script>
+  
+  <script>
+    $(document).ready(function() {
+      $('#btnCancelar').click(function() {
+        var confirmacion = window.confirm("¿Está seguro de cancelar dicha acción?");
+        if (confirmacion) {
+          // Si el usuario confirma, redirige a la página sin datos.
+          window.location.href = "{{ url_for('frameReporteEmpleado') }}";
+        }
+        // Si el usuario cancela, simplemente cierra el cuadro de diálogo y no hace nada.
+      });
+    });
+  </script>
+  
+  <script>
+    $(document).ready(function() {
+        // Autocompletado para el campo de nombre
+        $("#inputEmpleado").autocomplete({
+            source: "{{ url_for('autocompleterep', tipo='nombre') }}", // Asegúrate de manejar este parámetro en tu backend
+            minLength: 1, // Mínimo de caracteres para iniciar la búsqueda
+            select: function(event, ui) {
+                $(this).val(ui.item.label);
+                return false;
+            }
+        });
+    
+        // Autocompletado para el campo de RFC
+        $("#inputRFC").autocomplete({
+            source: "{{ url_for('autocompleterep', tipo='rfc') }}", // Asegúrate de manejar este parámetro en tu backend
+            minLength: 1,
+            select: function(event, ui) {
+                $(this).val(ui.item.label);
+                return false;
+            }
+        });
+    });
+    </script>
+ <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+ <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+
+</body>
+</html>

@@ -1,0 +1,226 @@
+
+body {
+    width: 970px;
+    height: 50%;
+    background-color: white;
+    margin: 0;
+    padding: 0;
+    font-family: 'Roboto', sans-serif;
+    overflow: auto;
+}
+
+.rectangle {
+    background-color: rgba(239, 239, 239, 0.6);
+    width: 98%;
+    
+    height: 800px;
+    border: 3px solid black;
+    border-radius: 18px;
+    
+    display: flex;
+    flex-direction: column;
+}
+.Tabla {
+    overflow: auto; /* Permite el desplazamiento si el contenido excede la altura */
+    height: 500px; /* Altura fija */
+}
+.inner-text {
+    color: black;
+    font-size: 18px;
+    border-radius: 18px 18px 0 0;
+    background-color: #C0E3FD;
+}
+.inner-rectangle {
+    width: 100%;
+    height: 40px;
+    background-color: #C0E3FD;
+    border-radius: 18px 18px 0 0;
+    /* Opción 1: Cambiar a position: relative; */
+    top:auto;
+}
+
+
+.busqueda {
+    display: flex;
+    justify-content: start;
+    margin-top: 10px;
+    margin-left: 10px;
+    position: relative; 
+    height: 30px;
+    align-items: center;
+}
+
+.busqueda input[type="search"] {
+    width: 40%;
+    height: 30px;
+    margin-left: 25%;
+}
+
+.btn-buscar {
+    height:30px;
+    width: auto;
+    color: white;
+    border: none;
+    cursor: pointer;
+    margin-right: 20px; /* Ajusta el valor para que coincida con la altura del botón */
+}
+
+
+
+
+.btn-pequeño {
+    height: 30px;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 0 20px;
+    cursor: pointer;
+}
+
+#boton-horario {
+    background-color: #0A9D52;
+}
+
+#boton-hecho{
+    color: white;
+    background-color: teal;
+}
+#boton-hecho a{
+    color: white;
+}
+#mensaje-espera {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 20px;
+    border-radius: 10px;
+    font-size: 18px;
+    z-index: 1000; /* Asegura que esté sobre otros elementos */
+}
+
+
+
+#boton-volver {
+    background-color: #ff2a2a;
+}
+
+.Table {
+    width: 98%;
+    text-align: center;
+    margin-left: 0px;
+    margin-right: 0px;
+    
+}
+
+
+
+
+.Table th, .Table td {
+    text-align: center;
+    padding: 4px;
+}
+
+.Table tr:nth-child(odd) {
+    background-color: #D3ECFF;
+}
+
+.Tabla tbody tr:nth-child(even) {
+    background-color: #E4F3FF; 
+}
+
+.Table th {
+    background-color: #00796B;
+    color: white;
+}
+
+
+/* Estilos para los enlaces dentro de la tabla para que ocupen toda la celda */
+.Table td a {
+    display: block;
+    padding: 10px; /* O el padding que necesites */
+    text-decoration: none; /* Quita el subrayado de los enlaces */
+    color: inherit; /* Los enlaces usan el color de texto heredado de la celda */
+    border-radius: 5px; /* Radio de borde opcional para los enlaces */
+}
+
+/* Estilos para el hover de las filas */
+.Table tr:hover a {
+    background-color: #B2DFDB; /* Color de fondo cuando se pasa el ratón por encima */
+}
+
+/* Estilo para cambiar la apariencia al pasar el ratón por encima del enlace */
+.Table td a:hover {
+    background-color: #80CBC4; /* Cambia este color según el diseño que prefieras */
+    color: white; /* Cambia el color del texto al pasar el ratón por encima */
+}
+
+
+.tablainfo th {
+
+    color: black;
+    
+}
+
+
+.tablainfo td {    
+    display: table-cell;
+    vertical-align: inherit;
+    font-weight: bold;
+    text-align: -internal-center;
+
+}
+
+.Table td {
+    height: 45px; /* Establece la altura de las celdas de encabezado y de datos */
+    /* Tus otros estilos */
+
+
+}
+.Table th{
+    height: 30px;
+
+}
+#scrollable-inner-rectangle {
+    overflow-y: auto; /* Habilita la barra de desplazamiento vertical si el contenido es más grande que el contenedor */
+    height: 500px; /* Establece la altura máxima después de la cual el contenido deberá desplazarse */
+}
+.horario {
+    width: 900px; /* Ancho fijo de la tabla */
+    border-collapse: collapse;
+    margin: 0 auto; /* Centra la tabla horizontalmente */
+    overflow: visible;
+}
+
+.scrollhorario{ height: 400px; /* o la altura que desees para tu contenedor */
+    overflow-y: auto; /* esto permitirá el desplazamiento si el tbody es más grande que el contenedor */
+
+}
+
+
+.horario, .horario th, .horario td {
+    border: 1px solid black; /* Bordes de las celdas y la tabla */
+}
+
+.horario th {
+    background-color: #C0E3FD; /* Color de fondo de los encabezados */
+    color: black; /* Color del texto de los encabezados */
+    height: 30px;
+}
+
+.horario td {
+    text-align: center;
+    vertical-align: middle;
+    height: 20px; /* Altura fija para las celdas */
+}
+
+.verde {
+    background-color: #28a745; /* Color verde para celdas disponibles */
+}
+
+.rojo {
+    background-color: #dc3545; /* Color rojo para celdas no disponibles */
+}

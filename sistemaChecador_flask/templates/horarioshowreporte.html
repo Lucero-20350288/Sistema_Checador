@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Horarios ALIOth-ALbeRTO</title>
+    <link rel="stylesheet" id="menuStyle" href="{{ url_for('static', filename='css/horarios.css') }}">
+</head>
+<body class="rectangle">
+    
+<div class="inner-rectangle">
+    <p class="inner-text">Horario</p>
+</div>
+
+<table class="tablainfo">
+    <tr>
+        <th id="nombreCompleto">NOMBRE: <span id="nombreCompleto">{{ datos_horario.nombre }}</span></th>
+        <th >F.I: {{ datos_contratacion.fecha_de_ingreso }}</th> 
+        <th>DEPARTAMENTO O ÁREA: {{ datos_contratacion.departamento_o_area }}</th>
+        <th style="color: {% if datos_generales.estatus == 'Activo' %}green{% else %}red{% endif %};">STATUS:  <span id="estatus">{{ datos_generales.estatus }}</span></th>
+    </tr>
+    <tr>
+        <th >RFC: <span id="rfc">{{ datos_generales.RFC }}</span></th>  
+        <th >PUESTO:<span id="puesto">{{ datos_contratacion.puesto }}</span> </th>
+        <td>HORARIO ACTUAL: {{ datos_horario.horario_actual }}</td>
+    </tr>
+</table>
+
+<div class="scrollhorario">
+    <table class="horario">
+        <tr>
+            <th>HORA</th>
+            <th>LUNES</th>
+            <th>MARTES</th>
+            <th>MIÉRCOLES</th>
+            <th>JUEVES</th>
+            <th>VIERNES</th>
+            <th>SÁBADO</th>
+            <th>DOMINGO</th>
+        </tr> {% if datos_contratacion.puesto.lower() == 'docente' %}
+        {% set rango_horas = range(5, 21) %}
+    {% else %}
+        {% set rango_horas = range(0, 24) %}
+    {% endif %}
+{% for hora in rango_horas %}
+    <tr>
+        <td>{{ '{:02d}'.format(hora) }}:00</td> <!-- Agrega un 0 al inicio si la hora es de un solo dígito -->
+        {% for dia in range(1, 8) %}
+            {% set clase = '' %}
+            {% if dia in datos_horario.horario and '{:02d}'.format(hora)|string+':00' in datos_horario.horario[dia].Hora_entrada %}
+                {% set clase = 'verde' %}
+            {% elif dia in datos_horario.horario and '{:02d}'.format(hora)|string+':00' in datos_horario.horario[dia].Hora_salida %}
+                {% set clase = 'rojo' %}
+            {% endif %}
+            <td class="{{ clase }}"></td>
+        {% endfor %}
+    </tr>
+{% endfor %}
+
+    </table>
+</div>
+
+<button class="btn-pequeño" id="boton-hecho" onclick="window.location.href='{{ url_for('framehorario') }}'">Hecho</button>
+
+</body>
+</html>

@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/botonchecador.css') }}">
+<title>Reporte Checador</title>
+<script
+  src="https://code.jquery.com/jquery-3.7.1.min.js"
+  integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
+  crossorigin="anonymous">
+  </script>
+</head>
+<body>
+
+  <div class="ventana">
+    <div class="header">Checador
+      <button class="btn-cerrar" onclick="cerrarVentana()">X</button>
+    </div>
+  
+
+  
+  <div class="tabla-container">
+    <table class="tabla">
+      <thead>
+        <tr>
+            <th>Fecha</th>
+            <th>Nombre</th>
+            <th>Hora</th>
+            <th>Tipo</th>
+            <th>Estatus</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for registro in resultados %}
+        <tr>
+            <td>{{ registro.fecha_dia }}</td>
+            <td>{{ registro.nombre }}</td>
+            <td>{{ registro.hora }}</td>
+            <td>{{ registro.tipo }}</td>
+            <td>{{ registro.estatus }}</td>
+        </tr>
+        {% else %}
+        <tr>
+            <td colspan="5">No se encontraron registros con faltas.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+  </div>
+</div>
+
+
+
+
+
+
+
+  
+
+  <script>
+    window.onload = function() {
+  var selectElement = document.querySelector('.select-busqueda');
+  cambiarBusqueda(selectElement); // Llama a esta función para establecer la visibilidad inicial de los input
+};
+  </script>
+
+
+<script>
+  $(document).ready(function() {
+      function actualizarDatos() {
+          $.getJSON('/actualizaciones-recientes', function(data) {
+              var tabla = $('.tabla tbody');
+              tabla.empty();  // Limpiar tabla actual
+              data.forEach(function(registro) {
+                  tabla.append(`<tr>
+                      <td>${registro.fecha_dia}</td>
+                      <td>${registro.nombre}</td>
+                      <td>${registro.hora}</td>
+                      <td>${registro.tipo}</td>
+                      <td>${registro.estatus}</td>
+                  </tr>`);
+              });
+          });
+      }
+      setInterval(actualizarDatos, 20000);  // Llamar cada 30 segundos
+  });
+</script>
+
+
+
+  
+  
+</body>
+</html>

@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Incidencias</title>
+  <link rel="stylesheet" href="../static/css/autorizacion-justificaciones.css">
+  <script
+  src="https://code.jquery.com/jquery-3.7.1.min.js"
+  integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
+  crossorigin="anonymous">
+  </script>
+</head>
+<body>
+    <div class="ventana">
+        <div class="header">
+            <button class="btn-cerrar" onclick="cerrarVentana()">X</button>
+        </div>
+        <div class="content-botones">
+        <button type="submit" form="formAddIncidencia" class="btn-menu"> <img src="{{ url_for('static', filename='iconos/icon_agregar.png') }}" alt="agregar"> <span>Agregar</span></button> 
+        <button id="btnEliminar" form="{{url_for('delete', incidencia_incidencia=incidencia_incidencia)}}" class="btn-menu"> <img src="{{ url_for('static', filename='iconos/icon_eliminar.png') }}" alt="eliminar"> <span>Eliminar</span></button> 
+        </div>
+        
+        <div>
+            <form id="formAddIncidencia" action="/Incidencia" method="POST">
+                <div class="incidencias2">
+                    <div >
+                        <label>Nueva incidencia:</label>
+                        <input type="text"  name="incidencia" class="campo-incidencia">
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="tabla-content-incidencias">
+            <table class="tabla-incidencias" id="tablaIncidencias">
+                <thead>
+                    <tr>
+                        <th>Incidencia</th>
+                    </tr>
+                </thead>
+                <tbody id="tabla-body">
+                    <!-- Aquí se agregarán las filas de la tabla con los datos de las incidencias -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+    </div>
+    <script>
+        $(document).ready(function() {
+            // Hacer la solicitud AJAX al endpoint para obtener las incidencias
+            $.ajax({
+                url: '/obtener-incidencias',
+                type: 'GET',
+                success: function(data) {
+                    // Iterar sobre las incidencias y agregarlas a la tabla
+                    data.forEach(function(incidencia) {
+                        $('#tabla-body').append('<tr><td>' + incidencia.incidencia + '</td></tr>');
+                    });
+                },
+                error: function(err) {
+                    console.log(err);
+                }
+            });
+        });
+
+        $(document).ready(function() {
+    var filaSeleccionada = null;
+
+    $('#tabla-body').on('click', 'tr', function() {
+        // Si ya hay una fila seleccionada, quitar la clase y restaurar el color original
+        if (filaSeleccionada) {
+            filaSeleccionada.removeClass('selected');
+        }
+
+        // Obtener la nueva fila seleccionada y agregar la clase
+        filaSeleccionada = $(this);
+        filaSeleccionada.addClass('selected');
+
+        // Obtener el texto de la celda seleccionada
+        const incidenciaSeleccionada = filaSeleccionada.find('td').text();
+        // Realizar alguna acción con la incidencia seleccionada
+        console.log('Incidencia seleccionada: ' + incidenciaSeleccionada);
+    });
+        });
+    
+$(document).ready(function() {
+    var filaSeleccionada = null;
+
+    $('#tabla-body').on('click', 'tr', function() {
+        // Si ya hay una fila seleccionada, quitar la clase
+        if (filaSeleccionada) {
+            filaSeleccionada.removeClass('selected');
+        }
+
+        // Obtener la nueva fila seleccionada y agregar la clase
+        filaSeleccionada = $(this);
+        filaSeleccionada.addClass('selected');
+
+        // Obtener el texto de la celda seleccionada
+        const incidenciaSeleccionada = filaSeleccionada.find('td').text();
+        // Realizar alguna acción con la incidencia seleccionada
+        console.log('Incidencia seleccionada: ' + incidenciaSeleccionada);
+    });
+
+    $('#btnEliminar').on('click', function() {
+        // Verificar si hay una fila seleccionada
+        if (filaSeleccionada) {
+            // Obtener el valor de la celda seleccionada (puedes adaptarlo a tu lógica)
+            const incidenciaIncidencia = filaSeleccionada.find('td').text();
+            // Realizar la eliminación de la fila (o la acción correspondiente)
+            filaSeleccionada.remove();
+            // Llamar a la ruta de Flask para eliminar la incidencia en la base de datos
+            $.ajax({
+                url: '/delete/' + incidenciaIncidencia,
+                type: 'GET',
+                success: function(response) {
+                    // Aquí puedes manejar la respuesta si es necesario
+                    console.log('Incidencia eliminada: ' + incidenciaIncidencia);
+                },
+                error: function(err) {
+                    console.log('Error al eliminar la incidencia: ' + incidenciaIncidencia);
+                }
+            });
+            // Limpiar la variable de la fila seleccionada
+            filaSeleccionada = null;
+        }
+    });
+});
+
+$(document).ready(function() {
+    $('#formAddIncidencia').on('submit', function(event) {
+        event.preventDefault(); // Evitar que el formulario se envíe automáticamente
+
+        // Obtener el valor de la nueva incidencia
+        const nuevaIncidencia = $('#formAddIncidencia input[name="incidencia"]').val();
+
+        // Realizar la solicitud AJAX para verificar si la incidencia ya existe
+        $.ajax({
+            url: '/verificar-incidencia',
+            type: 'POST',
+            data: { incidencia: nuevaIncidencia },
+            success: function(response) {
+                if (response.existe) {
+                    alert('La incidencia ya existe en la base de datos.');
+                } else {
+                    // Si la incidencia no existe, enviar el formulario
+                    $('#formAddIncidencia')[0].submit();
+                }
+            },
+            error: function(err) {
+                console.log('Error al verificar la incidencia:', err);
+            }
+        });
+    });
+});
+
+
+        
+            
+      function cerrarVentana() {
+      var frame = $(".ventana")
+      frame.hide()
+      }
+    </script>
+    
+</body>
+</html>
+</html>

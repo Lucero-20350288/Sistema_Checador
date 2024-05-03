@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Envío de Incidencias</title>
+<link rel="stylesheet" id="menuStyle" href="menu-grande.css">
+
+</head>
+<body>
+
+<div class="sidebar">
+  <div class="top-section">
+    <div class="left-side">
+      <img src="iconos/logo1.png" alt="logo1" class="logo1">
+      <div class="brand-text">TECNM</div>
+    </div>
+    <div class="right-side">
+      <div class="ittux-text">TUXTEPEC</div>
+      <img src="iconos/logo1.png" alt="logo2" class="logo2">
+    </div>
+  </div>
+  <div class="bottom-section">
+    <button class="botonmenu"><img id="menu1"class="iconmenu" src="iconos/logo1.png" alt="">Archivos</button>
+    <button class="botonmenu"><img id="menu2"class="iconmenu" src="iconos/logo1.png" alt="">Catálogos</button>
+    <button class="botonmenu"><img id="menu3"class="iconmenu" src="iconos/logo1.png" alt="">Reportes</button>
+    <button class="botonmenu"><img id="menu4"class="iconmenu" src="iconos/logo1.png" alt="">Seguridad</button>
+    <button class="botonmenu"><img id="menu5"class="iconmenu" src="iconos/logo1.png" alt="">Mantenimiento</button>
+    <button class="botonmenu"><img id="menu6"class="iconmenu" src="iconos/logo1.png" alt="">Días Festivos</button>
+    <button class="botonmenu"><img id="menu7"class="iconmenu" src="iconos/logo1.png" alt="">Avisos</button>
+    <button class="botonmenu"><img id="menu8"class="iconmenu" src="iconos/logo1.png" alt="">Red</button>
+    
+  <div class="divmenu"><button class="botonsidebar"><img id="menudisplay" src="iconos/doublearrow.png" alt=""></button></div>
+  </div>
+  
+</div>
+
+<div class="header">
+   <button class="boton01" id="b1"><img id="b1i" src="iconos/check.png"  alt="">Checador</button>
+    <button class="boton02" id="b2"><img id="b2i" src="iconos/more.png"  alt="">Agregar empleado</button>
+  
+  <!-- Contenedor para #info y #perfil -->
+  <div id="infoPerfilContainer">
+    <img src="iconos/BOTON-interrogacion.png" id="info"alt="info">
+    <img src="iconos/CIRCULO-PERFIL-MENÚ.png" id="perfil"alt="perfil">
+  </div>
+</div>
+
+<div class="content">
+  <!-- Contenido principal de la página -->
+  <iframe class="frameprincipal" src="">
+  
+  
+  
+  </iframe>
+</div><script>
+  document.addEventListener('DOMContentLoaded', function() {
+    var boton = document.querySelector('.botonsidebar'); // Selecciona el botón por su clase
+    boton.addEventListener('click', function() {
+      var link = document.getElementById('menuStyle'); // Selecciona la etiqueta link por su id
+      var textElements = document.querySelectorAll('.sidebar .brand-text, .sidebar .ittux-text'); // Selecciona los textos a ocultar en el sidebar
+
+      if (link.getAttribute('href') === 'menu-grande.css') {
+        link.setAttribute('href', 'menu-pequeno.css'); // Cambia al menú pequeño
+        textElements.forEach(element => element.classList.add('hide-text')); // Oculta el texto
+      } else {
+        link.setAttribute('href', 'menu-grande.css'); // Cambia al menú grande
+        textElements.forEach(element => element.classList.remove('hide-text')); // Muestra el texto
+      }
+    });
+  });
+</script>
+
+</body>
+</html>

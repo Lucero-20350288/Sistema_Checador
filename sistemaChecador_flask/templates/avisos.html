@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/avisos.CSS') }}">
+  <title>Avisos</title>
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+</head>
+
+<body>
+  <div class="ventana">
+    <div class="header">ENVIAR AVISOS
+      <button class="btn-cerrar" onclick="cerrarVentana()">X</button>
+    </div>
+
+    <!-- Nuevo header para el mensaje -->
+    <div class="message-header">
+      <!-- Apartado para ingresar mensaje -->
+      <div class="input-contenedoraviso">
+        <textarea class="input-mensaje" placeholder="Ingresa tu aviso aquí" id="inputAviso"></textarea>
+      </div>
+
+      <!-- Apartado para ingresar RFC -->
+      <div class="input-contenedorrfc">
+        <input type="text" class="input-rfc" placeholder="Ingresa el RFC o el nombre aquí" id="inputRFC" onblur="buscarRFC()" oninput="validarRFC(this)">
+        <div id="rfcList" class="rfc-list"></div> <!-- Contenedor para la lista dinámica de RFC -->
+      </div>
+
+      <!-- Contenedor para la frase "Fecha de Creación" y la opción para desplegar el calendario -->
+      <div class="input-container">
+        <p>Fecha de Creación:</p>
+        <input type="date" id="fecha_creacion" name="fecha_creacion" class="input-fecha" onchange="verificarFechas()">
+      </div>
+
+      <!-- Contenedor para la frase "Fecha de Vencimiento" y la opción para desplegar el calendario -->
+      <div class="input-containerven">
+        <p>Fecha de Vencimiento:</p>
+        <input type="date" id="fecha_vencimiento" name="fecha_vencimiento" class="input-fecha" onchange="verificarFechas()">
+      </div>
+    </div>
+    <div class="input-historial">
+      <a href="{{ url_for('buscaravisos') }}" class="btn-historial" id="btnHistorial">
+        Historial
+      </a>
+    </div>
+
+    <!-- Contenedor para los botones -->
+    <div class="btn-group">
+      <!-- Botón para guardar el mensaje -->
+      <button class="btn-guardar" onclick="enviarAvisoGeneral()" id="btnGuardarGeneral">GUARDAR COMO GENERAL</button>
+      <!-- Botón para enviar el mensaje -->
+      <button class="btn-enviar" onclick="enviarAviso()">ENVIAR POR PRIVADO</button>
+    </div>
+  </div>
+
+  <!-- Nuevo contenedor solicitado -->
+  <div class="texto-container">
+    <p class="texto">POR FAVOR INGRESE SU AVISO</p>
+  </div>
+
+  <script>
+    // Función para cerrar la ventana
+    function cerrarVentana() {
+      var frame = $(".ventana");
+      frame.hide();
+    }
+
+    // Función para verificar si se ha ingresado un aviso antes de enviarlo
+    function verificarAviso() {
+      var aviso = document.getElementById('inputAviso').value;
+      if (aviso.trim() === '') {
+        alert('Por favor ingrese primero su aviso');
+        return false; // Detiene la ejecución de la función y evita que se envíe el aviso
+      }
+      return true; // Continúa con el proceso de envío del aviso
+    }
+
+    // Función para verificar si la fecha de vencimiento es posterior a la fecha de creación
+    function verificarFechas() {
+      var fechaCreacion = document.getElementById('fecha_creacion').value;
+      var fechaVencimiento = document.getElementById('fecha_vencimiento').value;
+      if (fechaVencimiento < fechaCreacion) {
+        alert('Recuerda que la fecha de vencimiento debe ser mayor a la fecha de creacion');
+        document.getElementById('fecha_vencimiento').value = ''; // Limpiar la fecha de vencimiento
+      }
+    }
+
+    // Función para buscar RFC
+    function buscarRFC() {
+      // Aquí puedes implementar la lógica para buscar RFC en la base de datos
+      // Por ahora, solo mostramos un mensaje de ejemplo
+      alert('Aquí se realizará la búsqueda de RFC en la base de datos');
+    }
+
+    // Función para enviar el aviso general al servidor Flask
+    function enviarAvisoGeneral() {
+      if (!verificarAviso()) return; // Verificar si se ha ingresado un aviso antes de enviarlo
+      var mensaje = document.getElementById('inputAviso').value;
+      var fechaCreacion = document.getElementById('fecha_creacion').value; // Obtener la fecha de creación seleccionada
+      var fechaVencimiento = document.getElementById('fecha_vencimiento').value; // Obtener la fecha de vencimiento seleccionada
+      var rfc = document.getElementById('inputRFC').value; // Obtener el RFC
+
+      if (rfc.trim() !== '') {
+        // Si se ha ingresado un RFC, mostrar alerta y evitar enviar como general
+        alert('Está intentando enviar un aviso privado como general.');
+        return;
+      }
+
+      if (fechaCreacion.trim() === '' || fechaVencimiento.trim() === '') {
+        alert('Por favor ingresa la fecha de creación y vencimiento');
+        return;
+      }
+
+      var Avisogeneral_data = {
+        "Nombre": "Aviso_general",
+        "Aviso": mensaje,
+        "Fecha de creacion": fechaCreacion,
+        "Fecha de vencimiento": fechaVencimiento
+      };
+
+      // Realizar la solicitud AJAX para enviar los datos a la ruta correspondiente en Flask
+      $.ajax({
+        type: 'POST',
+        url: '/guardarAvisoGeneral', // Ruta en Flask para guardar el aviso general
+        contentType: 'application/json',
+        data: JSON.stringify(Avisogeneral_data),
+        success: function(response) {
+          alert(response.mensaje); // Mostrar mensaje de éxito recibido desde el servidor
+          document.getElementById('btnGuardarGeneral').disabled = true;
+          // Recargar la página después de 1 segundo
+          setTimeout(function() {
+            location.reload();
+          }, 1000);
+        },
+        error: function(error) {
+          alert('Error al guardar el aviso: ' + error.responseText); // Mostrar mensaje de error
+        }
+      });
+    }
+
+    // Función para enviar el aviso al servidor Flask
+    function enviarAviso() {
+      if (!verificarAviso()) return; // Verificar si se ha ingresado un aviso antes de enviarlo
+      var rfc = document.getElementById('inputRFC').value;
+      var mensaje = document.getElementById('inputAviso').value;
+
+      if (rfc.trim() === '') {
+        alert('Por favor ingresa el RFC');
+        return;
+      }
+
+      var fechaCreacion = document.getElementById('fecha_creacion').value; // Obtener la fecha de creación seleccionada
+      var fechaVencimiento = document.getElementById('fecha_vencimiento').value; // Obtener la fecha de vencimiento seleccionada
+
+      if (fechaCreacion.trim() === '' || fechaVencimiento.trim() === '') {
+        alert('Por favor ingresa la fecha de creación y vencimiento');
+        return;
+      }
+
+      // Verificar si la fecha de vencimiento es posterior a la fecha de creación
+      if (fechaVencimiento < fechaCreacion) {
+        alert('Recuerda que la fecha de vencimiento debe ser mayor a la fecha de creación');
+        return;
+      }
+
+      var Avisos_data = {
+        "RFC": rfc,
+        "Aviso": mensaje,
+        "Fecha de creacion": fechaCreacion,
+        "Fecha de vencimiento": fechaVencimiento
+      };
+
+      // Realizar la solicitud AJAX para enviar los datos a la ruta correspondiente en Flask
+      $.ajax({
+        type: 'POST',
+        url: '/guardarAvisos', // Ruta en Flask para guardar el aviso
+        contentType: 'application/json',
+        data: JSON.stringify(Avisos_data),
+        success: function(response) {
+          alert(response.mensaje); // Mostrar mensaje de éxito recibido desde el servidor
+          document.getElementById('btnGuardarGeneral').disabled = true;
+          // Recargar la página después de 1 segundo
+          setTimeout(function() {
+            location.reload();
+          }, 1000);
+        },
+        error: function(error) {
+          alert('Error al guardar el aviso: ' + error.responseText); // Mostrar mensaje de error
+        }
+      });
+    }
+
+    // Función para validar el RFC
+    function validarRFC(input) {
+      // Expresión regular para permitir solo letras, números y espacios en blanco
+      var regex = /^[A-Za-z0-9\s]*$/;
+      if (!regex.test(input.value)) {
+        alert('El RFC solo debe contener letras, números y espacios en blanco');
+        input.value = input.value.replace(/[^A-Za-z0-9\s]/g, ''); // Eliminar caracteres no permitidos
+      }
+    }
+
+    // Función para autocompletar RFCs
+    $('#inputRFC').autocomplete({
+      source: function(request, response) {
+        $.ajax({
+          url: '/autocomplete-datos',
+          type: 'GET',
+          dataType: 'json',
+          success: function(data) {
+            var results = $.map(data, function(value, key) {
+              var nombre_completo = value.RFC + ' ' + value.nombre + ' ' + value.apellido_paterno + ' ' + value.apellido_materno
+              return {
+                label: nombre_completo,
+                id: value._id,
+                rfc: value.RFC,
+                nombre: value.nombre,
+                apellido_paterno: value.apellido_paterno,
+                apellido_materno: value.apellido_materno
+              }
+            })
+            var results = $.ui.autocomplete.filter(results, request.term)
+            response(results)
+          }
+        })
+      },
+      select: function(event, ui) {
+        // Extraer solo los primeros 13 caracteres del RFC y asignarlos al campo de entrada de RFC
+        $('#inputRFC').val(ui.item.rfc.substring(0, 13));
+        return false; // Evitar que se añada el valor completo al campo
+      }
+    });
+
+    // Función para redirigir al historial
+    function verHistorial() {
+      window.location.href = '{{ url_for("buscaravisos") }}'; // Redirigir al usuario a la página historial.html
+    }
+  </script>
+</body>
+
+</html>

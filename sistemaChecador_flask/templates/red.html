@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ventana de Avisos</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/red.css') }}">
+</head>
+
+<body>
+
+    <div class="window">
+        <div class="title-bar">
+            <span class="title">RED</span>
+            <div class="window-controls">
+                <!-- Aquí podrías insertar imágenes o usar caracteres unicode para los botones de la ventana -->
+                <a href=''><button class="minimize"><img
+                            src="{{ url_for('static', filename='iconos/minimizar-signo.png') }}" alt="Minimize"
+                            height="24px" width="24px"></button></a>
+                <a href=''><button class="maximize" href='aaavisos.html'><img
+                            src="{{ url_for('static', filename='iconos/expandir.png') }}" alt="Maximize" height="24px"
+                            width="24px"></button></a>
+                <a href=''><button class="close" href='index.html'><img
+                            src="{{ url_for('static', filename='iconos/boton.png') }}" alt=" Close" height="24px"
+                            width="24px" s></button></a>
+
+            </div>
+        </div>
+
+
+        <div class="network-diagram">
+            <!-- DEP_COM con texto debajo -->
+            <div id="DEP_COM" class="computer" onclick="changeStatus(this)">
+                <img src="{{ url_for('static', filename='iconos/flecha-hacia-arriba.png')}}" class="flecha arriba"
+                    alt=" DEP_COM" >
+                <span class="user-label">DEP_COM</span>
+            </div>
+            <!-- DEP_MANT con texto debajo -->
+            <div id="DEP_MANT" class="computer" onclick="changeStatus(this)">
+                <img src="{{ url_for('static', filename='iconos/flechas-a-la-derecha.png')}}" class="flecha derecha"
+                    alt="DEP_MANT" >
+                <span class="user-label">DEP_MANT</span>
+            </div>
+            <!-- SERVIDOR con texto debajo -->
+            <div class="server">
+                <img src="{{ url_for('static', filename='iconos/servidor.png')}}" alt="SERVIDOR" class="server-image"
+                    height="120px" width="120px">
+                <span class="server-text">SERVIDOR</span>
+            </div>
+            <!-- DEP_ACD con texto debajo -->
+            <div id="DEP_ACD" class="computer" onclick="changeStatus(this)">
+                <img src="{{ url_for('static', filename='iconos/flecha-izquierda.png')}}" class="flecha izquierda"
+                    alt="DEP_ACD" >
+                <span class="user-label">DEP_ACAD</span>
+            </div>
+            <!-- DEP_POS con texto debajo -->
+            <div id="DEP_POS" class="computer" onclick="changeStatus(this,)">
+                <img src="{{ url_for('static', filename='iconos/flecha-hacia-abajo.png')}}" class="flecha abajo"
+                    lt="DEP_POS" >
+                <span class="user-label">DEP_POS</span>
+            </div>
+        </div>
+
+        <!-- Popup para mostrar los mensajes -->
+        <div id="popup" class="popup" style="display:none;">
+            <div class="popup-header">
+                CHECADOR CAÍDO
+                <div class="popup-icon">⚠️</div>
+            </div>
+            <div class="popup-body">
+                El checador de este edificio dejó de funcionar.
+            </div>
+            <div class="popup-footer">
+                <button onclick="closePopup()">Ok</button>
+            </div>
+        </div>
+
+        <!-- Resto de tu HTML aquí -->
+
+        <script>
+            // Array de departamentos y sus respectivos hosts
+            const departments = [
+                { elementId: 'DEP_COM', host: '169.254.213.48' },
+                { elementId: 'DEP_MANT', host: '192.168.1.118' }, // Asegúrate de poner la IP correcta
+                { elementId: 'DEP_ACD', host: '192.168.1.119' },  // Asegúrate de poner la IP correcta
+                { elementId: 'DEP_POS', host: '192.168.1.120' }   // Asegúrate de poner la IP correcta
+            ];
+
+            let currentDepartmentIndex = 0;
+
+            function pingNextDepartment() {
+                const currentDepartment = departments[currentDepartmentIndex];
+                const element = document.getElementById(currentDepartment.elementId);
+                if (element) {
+                    changeStatus(element, currentDepartment.host);
+                }
+                // Actualizar al siguiente departamento para el próximo ping
+                currentDepartmentIndex = (currentDepartmentIndex + 1) % departments.length;
+            }
+
+            function changeStatus(element, host) {
+                // Función para realizar el ping y cambiar el estado aquí...
+            }
+
+            // Iniciar la secuencia de pings
+            setInterval(pingNextDepartment, 2000); // Cambia cada 5 segundos
+
+            function showPopup() {
+                // Función para mostrar el popup aquí...
+            }
+
+            function closePopup() {
+                // Función para cerrar el popup aquí...
+            }
+        </script>
+
+
+
+        <script>
+            function changeStatus(element, host) {
+                fetch(`/ping/${host}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log("Data recibida:", data);  // Para depuración
+                        if (data.status === "success") {
+                            element.style.backgroundColor = "green";
+                            // Asegúrate de que la ventana de error se oculte si previamente se mostró
+                            document.getElementById("popup").style.display = "none";
+                        } else {
+                            element.style.backgroundColor = "red";
+                            //showPopup();
+                        }
+                        // Restablece el color después de un tiempo
+                        setTimeout(function () {
+                            element.style.backgroundColor = "";  // O el color por defecto
+                        }, 100000);
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        element.style.backgroundColor = "grey";
+                    });
+            }
+
+
+
+            function showPopup() {
+                var popup = document.getElementById("popup");
+                popup.style.display = "block";
+                // Ocultar popup después de 3 segundos
+                setTimeout(function () {
+                    popup.style.display = "none";
+                }, 3000);
+            }
+
+            function closePopup() {
+                var popup = document.getElementById("popup");
+                popup.style.display = "none";
+            }
+
+
+        </script>
+
+
+
+</body>
+
+</html>

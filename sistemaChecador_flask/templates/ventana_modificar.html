@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/modificar.css') }}">
+  <title>Empleado</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 20px;
+    }
+
+    .ventana {
+      background-color: white;
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .header {
+      background-color: #007bff;
+      color: white;
+      padding: 10px 20px;
+      text-align: center;
+      margin-bottom: 20px;
+      height: 40px;
+    }
+
+    label {
+      display: block;
+      margin: 10px 0 5px;
+    }
+
+    input,
+    select {
+      width: 100%;
+      padding: 8px;
+      margin-bottom: 20px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      box-sizing: border-box;
+      /* Add this line to include padding in the input width */
+    }
+
+    .btn-menu {
+      background-color: #007bff;
+      color: white;
+      padding: 10px 20px;
+      text-decoration: none;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    .btn-menu img {
+      vertical-align: middle;
+      margin-right: 8px;
+    }
+
+    .btn-menu span {
+      vertical-align: middle;
+    }
+
+    .btn-menu:not(:last-child) {
+      margin-right: 10px;
+    }
+
+    .content-botones {
+      text-align: right;
+      padding-bottom: 20px;
+    }
+
+    .btn-menu:nth-child(2) {
+      background-color: #dc3545;
+      /* Cancel button */
+    }
+
+    .btn-menu:hover {
+      opacity: 0.9;
+    }
+
+    button[type="submit"] {
+      width: auto;
+      /* Adjust the width of the submit button */
+      padding: 10px 40px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="ventana">
+    <div class="header">
+      <h2>Modificar Registro de Empleado</h2>
+    </div>
+    <form action="{{ url_for('actualizar_registro') }}" method="post" id="updateForm">
+      <div class="content-botones">
+        <button type="submit" class="btn-menu">
+          <img src="{{ url_for('static', filename='iconos/icon_guar.png') }}" alt="Guardar">
+          <span>Guardar</span>
+        </button>
+        <button type="button" id="btnCancelar" class="btn-menu">
+          <img src="{{ url_for('static', filename='iconos/icon_cancelar.png') }}" alt="Cancelar">
+          <span>Cancelar</span>
+        </button>
+      </div>
+
+      <form action="{{ url_for('actualizar_registro') }}" method="post">
+        <label for="fecha">Fecha:</label>
+        <input type="text" id="fecha" name="fecha" value="{{ datos.Fecha }}" readonly>
+
+        <label for="nombre">Nombre:</label>
+        <input type="text" id="nombre" name="nombre" value="{{ datos.Nombre }}" readonly>
+
+        <label for="rfc">RFC:</label>
+        <input type="text" id="rfc" name="rfc" value="{{ datos.RFC }}" readonly>
+
+        <label for="hora">Hora:</label>
+        <select name="hora" id="hora">
+          <!-- Opciones de hora de entrada -->
+          <optgroup label="Horas de Entrada">
+            {% for hora in datos.HorasEntrada %}
+            <option value="{{ hora }}">{{ hora }}</option>
+            {% endfor %}
+          </optgroup>
+          <!-- Opciones de hora de salida -->
+          <optgroup label="Horas de Salida">
+            {% for hora in datos.HorasSalida %}
+            <option value="{{ hora }}">{{ hora }}</option>
+            {% endfor %}
+          </optgroup>
+        </select>
+
+
+        <label for="tipo">Tipo:</label>
+        <select name="tipo">
+          <option value="Entrada" {% if datos.Tipo=='Entrada' %}selected{% endif %}>Entrada</option>
+          <option value="Salida" {% if datos.Tipo=='Salida' %}selected{% endif %}>Salida</option>
+        </select>
+
+        <label for="estatus">Estatus:</label>
+        <select name="estatus">
+          <option value="NORMAL" {% if datos.Estatus=='NORMAL' %}selected{% endif %}>NORMAL</option>
+          <option value="RETARDO" {% if datos.Estatus=='RETARDO' %}selected{% endif %}>RETARDO</option>
+          <option value="FALTA" {% if datos.Estatus=='FALTA' %}selected{% endif %}>FALTA</option>
+          <option value="NOTA MALA" {% if datos.Estatus=='NOTA MALA' %}selected{% endif %}>NOTA MALA</option>
+          <option value="INCIDENCIA" {% if datos.Estatus=='INCIDENCIA' %}selected{% endif %}>INCIDENCIA</option>
+        </select>
+
+        <button type="submit">Guardar</button>
+      </form>
+
+      <script>
+        document.addEventListener('DOMContentLoaded', function () {
+          var inputHora = document.getElementById('inputHora');
+          if (inputHora) {
+            var horaCompleta = ""; // Este valor debería venir del servidor
+            var soloHora = horaCompleta.substring(11, 16); // Esto extraerá "06:00"
+            inputHora.value = soloHora;
+          }
+
+          var btnCancelar = document.getElementById('btnCancelar');
+          if (btnCancelar) {
+            btnCancelar.addEventListener('click', function () {
+              window.history.back();
+            });
+          }
+        });
+      </script>
+      <script>
+        // Encuentra el botón Guardar
+        var btnSave = document.querySelector('.btn-menu');
+        btnSave.addEventListener('click', function () {
+          // Encuentra todos los registros en la tabla
+          var registros = document.querySelectorAll('.tabla tbody tr');
+
+          registros.forEach(function (registro) {
+            // Extrae los datos necesarios de la fila
+            var hora_de_entrada = registro.querySelector('.input-hora').value;
+            var estatus_de_entrada = registro.querySelector('.select-estatus').value;
+
+            // Estructura los datos a enviar
+            var datos = {
+              hora_de_entrada: hora_de_entrada,
+              estatus: estatus_de_entrada
+            };
+
+            // Envía los datos a la ruta Flask para actualización
+            fetch('/actualizar_registro', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json'  // Asegúrate de que el encabezado sea correcto
+              },
+              body: JSON.stringify(datos)  // Convierte el objeto en JSON
+            })
+              .then(response => {
+                if (!response.ok) {
+                  throw new Error('Error en la actualización');
+                }
+                return response.json();
+              })
+              .then(data => {
+                console.log('Datos actualizados:', data);  // Mensaje de confirmación
+              })
+              .catch((error) => {
+                console.error('Error en la solicitud:', error);  // Manejo de errores
+              });
+          });
+        });
+
+      </script>
+
+      <script>
+        fetch('/actualizar_registro', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ estatus: 'NuevoEstatus' })  // Asegúrate de que esto coincide con lo que Flask espera
+        })
+          .then(response => response.json())
+          .then(data => console.log('Respuesta:', data))
+          .catch(error => console.error('Error:', error));
+      </script>
+
+
+</body>
+
+</html>
