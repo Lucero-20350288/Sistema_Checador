@@ -1470,6 +1470,7 @@ def horariotabla(rfc):
     return render_template('horariocarga.html', datos_horario=datos_horario, fecha_ingreso=fecha_ingreso, departamento=departamento, datos_contratacion=contrato, datos_generales=empleado)
 
 ###################################
+from datetime import datetime, timezone
 @app.route('/guardarHorario', methods=['PUT'])
 def guardar_horario():
     horario_data = request.get_json()
@@ -1485,7 +1486,6 @@ def guardar_horario():
     for dia, dia_info in horarios.items():
         dia_info['Hora_entrada'] = [datetime.strptime('1970-02-01T' + hora + ':00.000Z', '%Y-%m-%dT%H:%M:%S.%fZ').strftime('%Y-%m-%dT%H:%M:%S.%f')[:23] + 'Z' for hora in dia_info.get('Hora_entrada', [])]
         dia_info['Hora_salida'] = [datetime.strptime('1970-02-01T' + hora + ':00.000Z', '%Y-%m-%dT%H:%M:%S.%fZ').strftime('%Y-%m-%dT%H:%M:%S.%f')[:23] + 'Z' for hora in dia_info.get('Hora_salida', [])]
-
     # Actualizar o insertar el horario en la base de datos
     horario_existente = db.catalogos_horario.find_one({'RFC': rfc})
     if horario_existente:
@@ -1508,8 +1508,15 @@ def guardar_horario():
         # Agregar nuevas fechas y actualizar las existentes
         if fechas_dia:
             for fecha_nueva in fechas_dia:
+                if tipo_horario == 'Cerrado':
+                    fecha_nueva['HEC'] = [{'hora_entrada': datetime.strptime(hec['hora_entrada'], '%Y-%m-%dT%H:%M:%S.%fZ').replace(tzinfo=timezone.utc), 'estatus_checador': 'FALTA'} for hec in fecha_nueva.get('HEC', [])]
+                    fecha_nueva['HSC'] = [{'hora_salida': datetime.strptime(hsc['hora_salida'], '%Y-%m-%dT%H:%M:%S.%fZ').replace(tzinfo=timezone.utc), 'estatus_checador': 'FALTA'} for hsc in fecha_nueva.get('HSC', [])]
+                elif tipo_horario == 'Abierto':
+                    fecha_nueva['HEC'] = [{'hora_entrada': None, 'estatus_checador': 'ABIERTO'} for _ in fecha_nueva.get('HEC', [])]
+                    fecha_nueva['HSC'] = [{'hora_salida': None, 'estatus_checador': 'ABIERTO'} for _ in fecha_nueva.get('HSC', [])]
                 db.catalogos_horario.update_one({'RFC': rfc, 'Fechas.fecha_dia': {'$ne': fecha_nueva['fecha_dia']}}, {'$addToSet': {'Fechas': fecha_nueva}})
                 db.catalogos_horario.update_one({'RFC': rfc, 'Fechas.fecha_dia': fecha_nueva['fecha_dia']}, {'$set': {'Fechas.$': fecha_nueva}})
+
     else:
         nuevo_horario = {
             'RFC': rfc,
@@ -1528,11 +1535,20 @@ def guardar_horario():
             nuevo_horario['Horarios'][0]['DIA'] = horarios
         
         if fechas_dia:
-            nuevo_horario['Fechas'] = fechas_dia
-        
+            for fecha_nueva in fechas_dia:
+                if tipo_horario == 'Cerrado':
+                    fecha_nueva['HEC'] = [{'hora_entrada': datetime.strptime(hec['hora_entrada'], '%Y-%m-%dT%H:%M:%S.%fZ').replace(tzinfo=timezone.utc), 'estatus_checador': 'FALTA'} for hec in fecha_nueva.get('HEC', [])]
+                    fecha_nueva['HSC'] = [{'hora_salida': datetime.strptime(hsc['hora_salida'], '%Y-%m-%dT%H:%M:%S.%fZ').replace(tzinfo=timezone.utc), 'estatus_checador': 'FALTA'} for hsc in fecha_nueva.get('HSC', [])]
+                elif tipo_horario == 'Abierto':
+                    fecha_nueva['HEC'] = [{'hora_entrada': None, 'estatus_checador': 'ABIERTO'} for _ in fecha_nueva.get('HEC', [])]
+                    fecha_nueva['HSC'] = [{'hora_salida': None, 'estatus_checador': 'ABIERTO'} for _ in fecha_nueva.get('HSC', [])]
+        nuevo_horario['Fechas'] = fechas_dia
         db.catalogos_horario.insert_one(nuevo_horario)
-
+        
     return jsonify({'mensaje': 'Horario guardado exitosamente'}), 200
+
+
+
 
 
 

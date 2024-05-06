@@ -137,17 +137,10 @@ function agregarHoraEntrada(dia, hora) {
         horarios[dia].Hora_entrada.push(hora);
         // Ordena las horas de entrada para asegurar un chequeo adecuado
         horarios[dia].Hora_entrada.sort((a, b) => parseInt(a.split(':')[0]) - parseInt(b.split(':')[0]));
-        horarios[dia].Hora_salida.sort((a, b) => parseInt(a.split(':')[0]) - parseInt(b.split(':')[0]));
-                
+            
         // Si la hora actual tiene una hora de entrada previa que es al menos dos horas menor, entonces también agrega la actual como salida
         if (horarios[dia].Hora_entrada.some(h => parseInt(h.split(':')[0]) <= horaNumero - 2)) {
-            
-            // Verifica si no hay una hora de entrada previa que sea menos de dos horas menor
-            if (!horarios[dia].Hora_entrada.some(h => parseInt(h.split(':')[0]) <= horaNumero - 1) || !horarios[dia].Hora_salida.some(h => parseInt(h.split(':')[0]) <= horaNumero - 1)) {
-                // Agrega la hora actual como salida
-                horarios[dia].Hora_salida.push(hora);
-                horarios[dia].Hora_salida.sort((a, b) => parseInt(a.split(':')[0]) - parseInt(b.split(':')[0]));
-            }
+            horarios[dia].Hora_salida.push(hora);
         }
     }
     
@@ -198,42 +191,6 @@ function validarFechas() {
     }
     
     return true;
-}
-
-function generarHorarios() {
-    // Llamar a la función validarFechas() antes de generar los horarios
-    if (!validarFechas()) {
-        return;
-    }
-
-    const label = document.getElementById('datosHorario');
-    const datosHorarios = label.textContent.replace('Datos a enviar: ', '');
-    const horarios = JSON.parse(datosHorarios);
-
-    const fechaInicio = new Date(document.getElementById('fecha_inicio').value);
-    const fechaFin = new Date(document.getElementById('fecha_fin').value);
-    const periodo = [];
-    
-    // Recorrer cada día dentro del período
-    for (let fecha = new Date(fechaInicio); fecha <= fechaFin; fecha.setDate(fecha.getDate() + 1)) {
-        const fechaDia = new Date(fecha);
-        const diaSemana = fechaDia.getDay(); // Obtener el día de la semana (0 para domingo, 1 para lunes, etc.)
-        
-        // Verificar si el día de la semana está presente en los datos de horario
-        if (diaSemana.toString() in horarios) {
-            const HEC = horarios[diaSemana.toString()].Hora_entrada.map(hora => ({ hora_entrada: new Date(`1970-01-01T${hora}:00Z`), estatus_checador: 'FALTA' }));
-            const HSC = horarios[diaSemana.toString()].Hora_salida.map(hora => ({ hora_salida: new Date(`1970-01-01T${hora}:00Z`), estatus_checador: 'FALTA' }));
-            
-            // Agregar el objeto de fecha con sus horas de entrada y salida al array de período
-            periodo.push({ fecha_dia: fechaDia, HEC: HEC.length > 0 ? HEC : [], HSC: HSC.length > 0 ? HSC : [] });
-        } else {
-            // Si el día no tiene horas de entrada ni salida, agregar el objeto de fecha con arrays vacíos
-            periodo.push({ fecha_dia: fechaDia, HEC: [], HSC: [] });
-        }
-    }
-    
-    // Almacenar el período generado en una variable o realizar alguna acción adicional
-    console.log(periodo);
 }
 
 window.onload = function() {
@@ -325,17 +282,18 @@ function generafechachecador() {
             diaSemana = (diaSemana === 7) ? 0 : diaSemana;
             diaSemana = diaSemana + 1;
             
-            // Verificar si el día de la semana está presente en los datos de horario
-            if (diaSemana.toString() in horarios) {
-                const HEC = horarios[diaSemana.toString()].Hora_entrada.map(hora => ({ hora_entrada: new Date(`1970-01-01T${hora}:00.000Z`).toISOString(), estatus_checador: 'FALTA' }));
-                const HSC = horarios[diaSemana.toString()].Hora_salida.map(hora => ({ hora_salida: new Date(`1970-01-01T${hora}:00.000Z`).toISOString(), estatus_checador: 'FALTA' }));
-                
-                // Agregar el objeto de fecha con sus horas de entrada y salida al array de período
-                periodo.push({ fecha_dia: fechaDia.toISOString(), HEC: HEC.length > 0 ? HEC : [], HSC: HSC.length > 0 ? HSC : [] });
-            } else {
-                // Si el día no tiene horas de entrada ni salida, agregar el objeto de fecha con arrays vacíos
-                periodo.push({ fecha_dia: fechaDia.toISOString(), HEC: [{ hora_entrada: new Date(`1970-01-01T00:00:00.000Z`).toISOString(), estatus_checador: 'FALTA' }], HSC: [{ hora_salida: new Date(`1970-01-01T00:00:00.000Z`).toISOString(), estatus_checador: 'FALTA' }] });
-            }
+        // Verificar si el día de la semana está presente en los datos de horario
+        if (diaSemana.toString() in horarios) {
+            const HEC = horarios[diaSemana.toString()].Hora_entrada.map(hora => ({ hora_entrada: `1970-01-01T${hora}:00.000Z`, estatus_checador: 'FALTA' }));
+            const HSC = horarios[diaSemana.toString()].Hora_salida.map(hora => ({ hora_salida: `1970-01-01T${hora}:00.000Z`, estatus_checador: 'FALTA' }));
+                                                                                             
+            // Agregar el objeto de fecha con sus horas de entrada y salida al array de período
+            periodo.push({ fecha_dia: `${fechaDia.toISOString().slice(0, 10)}T00:00.000Z`, HEC: HEC.length > 0 ? HEC : [], HSC: HSC.length > 0 ? HSC : [] });
+        } else {
+            // Si el día no tiene horas de entrada ni salida, agregar el objeto de fecha con arrays vacíos
+          //  periodo.push({ fecha_dia: `${fechaDia.toISOString().slice(0, 10)}T00:00.000Z`, HEC: [{ hora_entrada: `1970-01-01T00:00.000+00:00`, estatus_checador: 'FALTA' }], HSC: [{ hora_salida: `1970-01-01T00:00:00+00:00`, estatus_checador: 'FALTA' }] });
+        }
+
         }
     } else if (tipoHorario === 'Abierto') {
         // Recorrer cada día dentro del período para horario abierto
